@@ -1,0 +1,431 @@
+{
+  "version": "0.10 2023-01-24",
+  "actOnVisible": "true",
+  "config": [
+    {
+      "type": "System",
+      "command": "sys",
+      "parameter": [
+        {
+          "name": "Current Applicationn",
+          "currVal": "0",
+          "type": "integer",
+          "max": "5",
+          "min": "0",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "The current running application"
+        },
+        {
+          "name": "Advertisement Interval (ms)",
+          "currVal": "250",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Advertisement timeout (s)",
+          "currVal": "5",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Advertisement Op",
+          "currVal": "0",
+          "type": "integer",
+          "max": "2",
+          "min": "0",
+          "visible": "false",
+          "warningValue": "2",
+          "warningText": "Warning, this value will turn on BLE long range, and incapacitate BLE normal range",
+          "help": "0 = BLE normal range, 1 = alternating BLE normal range / long range, 2 = BLE long range (Warning - no contact with phone)"
+        },
+        {
+          "name": "Tx power",
+          "currVal": "8",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Radar stoppedd",
+          "currVal": "1",
+          "type": "boolean",
+          "max": "1",
+          "min": "0",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "Turn radar on=0 / off=1"
+        },
+        {
+          "name": "Transport",
+          "currVal": "1",
+          "type": "integer",
+          "max": "2",
+          "min": "1",
+          "visible": "false",
+          "warningValue": "2",
+          "warningText": "Warning, this value will turn on LoRa, and NFC wake-up is needed for BLE",
+          "help": "BLE = 1, LoRa = 2"
+        }
+      ]
+    },
+    {
+      "type": "3:Well",
+      "command": "3",
+      "parameter": [
+        {
+          "name": "Update frequency",
+          "currVal": "15",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "HW acceleration average samples",
+          "currVal": "30",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Start of range",
+          "currVal": "0.2",
+          "type": "float",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Length of range",
+          "currVal": "6.800",
+          "type": "float",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Power save mode off",
+          "currVal": "0",
+          "type": "integer",
+          "max": "2",
+          "min": "0",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Service profile",
+          "currVal": "2",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Down sampling factor",
+          "currVal": "1",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Avarage factor",
+          "currVal": "9.000",
+          "type": "float",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Threshold Type",
+          "currVal": "2",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Fixed threshold sens",
+          "currVal": "170",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Threshold sens",
+          "currVal": "0.65",
+          "type": "float",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "Lab purpose only, default 0.65"
+        },
+        {
+          "name": "cfar threshold guard",
+          "currVal": "0.200",
+          "type": "float",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "cfar threshold window",
+          "currVal": "0.900",
+          "type": "float",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Offset",
+          "currVal": "0",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Peak sorting order",
+          "currVal": "2",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        }
+      ]
+    },
+    {
+      "type": "4:Bin",
+      "command": "4",
+      "parameter": [
+        {
+          "name": "Update frequency",
+          "currVal": "15",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "HW acceleration average samples",
+          "currVal": "30",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Start of range",
+          "currVal": "0.2",
+          "type": "float",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Length of range",
+          "currVal": "6.800",
+          "type": "float",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Power save mode off",
+          "currVal": "0",
+          "type": "integer",
+          "max": "2",
+          "min": "0",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Service profile",
+          "currVal": "2",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Down sampling factor",
+          "currVal": "1",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Avarage factor",
+          "currVal": "9.000",
+          "type": "float",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Threshold Type",
+          "currVal": "2",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Fixed threshold sens",
+          "currVal": "170",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Threshold sens",
+          "currVal": "0.5",
+          "type": "float",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "Lab purpose only, default 0.5"
+        },
+        {
+          "name": "cfar threshold guard",
+          "currVal": "0.200",
+          "type": "float",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "cfar threshold window",
+          "currVal": "0.900",
+          "type": "float",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Offset",
+          "currVal": "0",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        },
+        {
+          "name": "Peak sorting order",
+          "currVal": "2",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "This is a text meant to be helpful"
+        }
+      ]
+    }
+  ]
+}

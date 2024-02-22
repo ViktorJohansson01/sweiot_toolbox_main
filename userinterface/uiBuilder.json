@@ -1,0 +1,342 @@
+{
+    "version": "1.3.0----dirty 2023-09-06",
+    "actOnVisible": "true",
+    "config": [
+      {
+        "type": "System",
+        "command": "sys",
+        "parameter": [
+          {
+            "name": "Selected Application",
+            "currVal": "0",
+            "type": "integer",
+            "max": "5",
+            "min": "0",
+            "visible": "true",
+            "warningValue": "",
+            "warningText": "",
+            "help": "The current selected application"
+          },
+          {
+            "name": "Advertisement Interval (ms)",
+            "currVal": "250",
+            "type": "integer",
+            "max": "-",
+            "min": "-",
+            "visible": "false",
+            "warningValue": "",
+            "warningText": "",
+            "help": "System parameters - do not change"
+          },
+          {
+            "name": "Advertisement timeout (s)",
+            "currVal": "5",
+            "type": "integer",
+            "max": "-",
+            "min": "-",
+            "visible": "false",
+            "warningValue": "",
+            "warningText": "",
+            "help": "System parameters - do not change"
+          },
+          {
+            "name": "Bluetooth mode",
+            "currVal": "0",
+            "type": "integer",
+            "max": "2",
+            "min": "0",
+            "visible": "true",
+            "warningValue": "2",
+            "warningText": "Warning, this value will turn on Bluetooth (BLE) long range, and incapacitate BLE normal range",
+            "help": "0 = Bluetooth (BLE) normal range, 1 = alternating BLE normal range / long range, 2 = BLE long range (Warning - no contact with phone)"
+          },
+          {
+            "name": "Tx power",
+            "currVal": "8",
+            "type": "integer",
+            "max": "-",
+            "min": "-",
+            "visible": "false",
+            "warningValue": "",
+            "warningText": "",
+            "help": "System parameters - do not change"
+          },
+          {
+            "name": "Radar on",
+            "currVal": "1",
+            "type": "boolean",
+            "max": "1",
+            "min": "0",
+            "visible": "true",
+            "warningValue": "",
+            "warningText": "",
+            "help": "Turn radar off=0 / on=1"
+          },
+          {
+            "name": "Network configuration",
+            "currVal": "1",
+            "type": "integer",
+            "max": "3",
+            "min": "1",
+            "visible": "false",
+            "warningValue": "2",
+            "warningText": "Warning, this value will turn on LoRa, and NFC wake-up is needed for BLE",
+            "help": "Bluetooth (BLE) = 1, LoRa = 2, BLE & LoRa = 3"
+        },
+        {
+          "name": "Send on change",
+          "currVal": "0",
+          "type": "boolean",
+          "max": "-",
+          "min": "-",
+          "visible": "false",
+          "warningValue": "",
+          "warningText": "",
+          "help": "TBD - not implemented"
+        },
+        {
+          "name": "Perodic advertisment",
+          "currVal": "0",
+          "type": "integer",
+          "max": "-",
+          "min": "-",
+          "visible": "true",
+          "warningValue": "",
+          "warningText": "",
+          "help": "Denna är antalet sekunder mellan periodiska advertisment utöver de som sker vid mätning. Om denna är större än noll och mindre än intervallet för aktuell metod så startas advertisment med denna periodicitet. Default värde är noll."
+        }
+        ]
+      },
+      {
+        "type": "3:Well",
+        "command": "3",
+        "help": "Monitor well water levels for efficient resource management.",
+        "parameter": [
+          {
+            "name": "Measurement cycle (s)",
+            "currVal": "15",
+            "type": "integer",
+            "max": "-",
+            "min": "-",
+            "visible": "true",
+            "warningValue": "",
+            "warningText": "",
+            "help": "The time between radar measurments in seconds"
+          },
+          {
+            "name": "HW acceleration average samples",
+            "currVal": "30",
+            "type": "integer",
+            "max": "-",
+            "min": "-",
+            "visible": "false",
+            "warningValue": "",
+            "warningText": "",
+            "help": "This is a text meant to be helpful"
+          },
+          {
+            "name": "Start of range (m)",
+            "currVal": "0.2",
+            "type": "float",
+            "max": "-",
+            "min": "-",
+            "visible": "true",
+            "warningValue": "",
+            "warningText": "",
+            "help": "Start of range + Length of range = maximum 5 meter. The start and end values will be rounded to the closest measurement point available."
+          },
+          {
+            "name": "Length of range (m)",
+            "currVal": "4.800",
+            "type": "float",
+            "max": "-",
+            "min": "-",
+            "visible": "true",
+            "warningValue": "",
+            "warningText": "",
+            "help": "Start of range + Length of range = maximum 5 meter. The start and end values will be rounded to the closest measurement point available."
+          },
+          {     
+            "name": "Avarage factor",
+            "currVal": "4.000",
+            "type": "float",
+            "max": "-",
+            "min": "-",
+            "visible": "false",
+            "warningValue": "",
+            "warningText": "",
+            "help": "This is a text meant to be helpful"
+          },     
+          {
+            "name": "Sensitivity level",
+            "currVal": "0.65",
+            "type": "float",
+            "max": "-",
+            "min": "-",
+            "visible": "true",
+            "warningValue": "",
+            "warningText": "",
+            "help": "Low sensitivity will set a high threshold, resulting in a only a few detections but might result in a missed detections. Default 0.65"
+          },
+          {
+            "name": "cfar threshold guard",
+            "currVal": "0.200",
+            "type": "float",
+            "max": "0.2",
+            "min": "0.01",
+            "visible": "false",
+            "warningValue": "",
+            "warningText": "",
+            "help": "This is a text meant to be helpful"
+          },
+          {
+            "name": "cfar threshold window",
+            "currVal": "0.09",
+            "type": "float",
+            "max": "0.2",
+            "min": "0.01",
+            "visible": "false",
+            "warningValue": "",
+            "warningText": "",
+            "help": "Measurement point window in meter"
+          },
+          {
+            "name": "Offset",
+            "currVal": "0",
+            "type": "integer",
+            "max": "-",
+            "min": "-",
+            "visible": "false",
+            "warningValue": "",
+            "warningText": "",
+            "help": "Disabled, in mm"
+          }
+        ]
+      },
+      {
+        "type": "4:Bin - under test",
+        "command": "4",
+        "help": "Optimize storage with precise bin level monitoring.",
+        "parameter": [
+          {
+            "name": "Measurement cycle (s)",
+            "currVal": "15",
+            "type": "integer",
+            "max": "-",
+            "min": "-",
+            "visible": "true",
+            "warningValue": "",
+            "warningText": "",
+            "help": "The time between radar measurments in seconds"
+          },
+          {
+            "name": "HW acceleration average samples",
+            "currVal": "30",
+            "type": "integer",
+            "max": "-",
+            "min": "-",
+            "visible": "false",
+            "warningValue": "",
+            "warningText": "",
+            "help": "This is a text meant to be helpful"
+          },
+          {
+            "name": "Start of range",
+            "currVal": "0.2",
+            "type": "float",
+            "max": "-",
+            "min": "-",
+            "visible": "true",
+            "warningValue": "",
+            "warningText": "",
+            "help": "Start of range + Length of range = maximum 5 meter. The start and end values will be rounded to the closest measurement point available."
+          },
+          {
+            "name": "Length of range (m)",
+            "currVal": "4.800",
+            "type": "float",
+            "max": "-",
+            "min": "-",
+            "visible": "true",
+            "warningValue": "",
+            "warningText": "",
+            "help": "Start of range + Length of range = maximum 5 meter. The start and end values will be rounded to the closest measurement point available."
+          },
+          {
+            "name": "Threshold level",
+            "currVal": "290",
+            "type": "integer",
+            "max": "-",
+            "min": "-",
+            "visible": "true",
+            "warningValue": "",
+            "warningText": "",
+            "help": "High threshold, resulting in a only a few detections but might result in a missed detections. Default 290"
+          },
+          {
+            "name": "Offset",
+            "currVal": "0",
+            "type": "integer",
+            "max": "-",
+            "min": "-",
+            "visible": "false",
+            "warningValue": "",
+            "warningText": "",
+            "help": "Disabled, in mm"
+          }
+        ]
+      }, 
+      {
+        "type": "5:Parking",
+        "command": "5",
+        "help": "Manage parking with real-time occupancy sensors.",
+        "parameter": [
+          {
+            "name": "Measurement cycle (s)",
+            "currVal": "15",
+            "type": "integer",
+            "max": "-",
+            "min": "-",
+            "visible": "true",
+            "warningValue": "",
+            "warningText": "",
+            "help": "The time between radar measurments in seconds"
+          },
+          {
+            "name": "HW acceleration average samples",
+            "currVal": "30",
+            "type": "integer",
+            "max": "-",
+            "min": "-",
+            "visible": "false",
+            "warningValue": "",
+            "warningText": "",
+            "help": "This is a text meant to be helpful"
+          },
+          {
+            "name": "Start of range (m)",
+            "currVal": "0.2",
+            "type": "float",
+            "max": "-",
+            "min": "-",
+            "visible": "true",
+            "warningValue": "",
+            "warningText": "",
+            "help": "Start of range + Length of range = maximum 5 meter. The start and end values will be rounded to the closest measurement point available."
+          },
+          {
+            "name": "Length of range (m)",
+            "currVal": "4.800",
+            "type": "float",
+            "max": "-",
+            "min": "-",
+            "visible": "true",
+            "warningValue": "",
+            "warningText": "",
+            "help": "Start of range + Length of range = maximum 5 meter. The start and end values will be rounded to the closest measurement point available."
+          }
+        ]
+      }
+    ]
+  }
+  
