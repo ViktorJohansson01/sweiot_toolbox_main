@@ -78,10 +78,9 @@ export default class SweIoTConf extends Component<any, any, any> {
   measuredDataListLength = NO_OF_MEASUREMENT_DATA;
   drawer: any;
   bleHelp: BleHelper;
-  bleDeviceList: DeviceList;
   yggioHelp: YggioHelper;
   appHelp: AppHelper;
-
+  deviceState: any;
   public constructor(props: any) {
     super(props);
 
@@ -94,6 +93,10 @@ export default class SweIoTConf extends Component<any, any, any> {
     this.uiBuilder = UIBuilder.getInstance();
     this.parListLength = this.uiBuilder.getCnfSetParsLength();
 
+    this.deviceState = {
+      deviceListArray: Array<Device>
+    }
+
     this.state =
     {
       appLifeState: AppState.currentState,
@@ -101,7 +104,7 @@ export default class SweIoTConf extends Component<any, any, any> {
       receivedDataText: 'No data received ...',
       versionsText: 'Versions ...',
       parameterTextList: new Array<string>(this.parListLength),
-      deviceListArray: new Array<Device>,
+      
       securityStatus: UNSECURE_MODE,
       isLoginViewVisible: REQUIRE_SECURE_MODE,
       isModeSelectorViewVisible: false,
@@ -138,7 +141,6 @@ export default class SweIoTConf extends Component<any, any, any> {
 
     this.devProt = Protocol.getInstance();
 
-    this.bleDeviceList = DeviceList.getInstance(this, this.state.deviceListArray);
 
     this.http = new Http();
 
@@ -147,12 +149,15 @@ export default class SweIoTConf extends Component<any, any, any> {
     this.yggioHelp = YggioHelper.getInstance(this, this.http);
 
     this.appHelp = AppHelper.getInstance(this, this.http);
+  
+    this.bleHelp.bleStartScanning();
 
   } // constructor
 
   componentDidMount() {
     this.dbg.l("componentDidMount");
 
+    
     this.appStateSubscription = AppState.addEventListener("change", nextAppLifeState => {
       this.setState({ appLifeState: nextAppLifeState });
     });
@@ -289,27 +294,20 @@ export default class SweIoTConf extends Component<any, any, any> {
   public isStartDeviceScanViewVisible(): boolean { return (this.state.isStartDeviceScanViewVisible); }
 
 
-  public setAddDevice = _.throttle((newDevice: Device) => {
+
+  /*public setAddDevice = _.throttle((newDevice: Device) => {
     this.setState((prevState: any) => {
       const updatedArray = [...prevState.deviceListArray, newDevice];
 
-      updatedArray.sort((a, b) => b["rssi"]! - a["rssi"]!);
-
+      //updatedArray.sort((a, b) => b["rssi"]! - a["rssi"]!);
+      console.log("te");
+      
       return {
         deviceListArray: updatedArray,
       };
     });
-  }, 1700, { leading: true });
+  }, 5000);*/
 
-  public getDeviceListArray(): Array<Device> {
-    console.log(this.state.deviceListArray);
-    
-    return this.state.deviceListArray;
-  }
-
-  public clearDeviceArray(): void {
-    this.setState({ deviceListArray: [] });
-  }
   /**
   * Sets RN state (text / parameter field) for the given configuration set and parameter
   * identity
@@ -326,6 +324,7 @@ export default class SweIoTConf extends Component<any, any, any> {
   *
   * @beta
   */
+ 
   public setParTextState(configSetIndex: number, parmeterIndex: number, data: string, allowedInput: boolean, warningInput: boolean) {
     if (allowedInput) {
       let copyList = [...this.state.parameterTextList];
@@ -466,6 +465,7 @@ export default class SweIoTConf extends Component<any, any, any> {
   });
 
   render() {
+
     return (
       <View style={{ flex: 1, flexDirection: 'column', padding: 20 }}>{/*main skärmen */}
 
@@ -617,12 +617,12 @@ export default class SweIoTConf extends Component<any, any, any> {
 
                               <Text style={{ fontWeight: "bold" }}> {"Select SweIoT Yggio device: "} </Text>
 
-                              <FlatList
+                              {/*<FlatList
                                 showsVerticalScrollIndicator={true}
                                 data={Yggio.getInstance().getDeviceList()}
                                 renderItem={({ item }) => <this.YggioItemRender device={item} />}
                                 keyExtractor={(item: Device) => item.id}
-                              />
+                          />*/}
 
                               <Button
                                 title="Cancel"
@@ -792,12 +792,12 @@ export default class SweIoTConf extends Component<any, any, any> {
                   /> : 
 
                   this.state.isBleScanningViewVisible ? 
-                  <DeviceListView list={this.state.deviceListArray} bleHelp={this.bleHelp} /> :
+                  <DeviceListView list={this.bleHelp.getBleDeviceList()} bleHelp={this.bleHelp} stopDeviceScan={() => this.bleHelp.bleStopScanningAndConnect('')} refreshScan={() => this.bleHelp.bleDeviceList.clear()} /> :
 
                     this.state.isPairingDeviceView ? <Loading /> :
-                      this.state.isStartDeviceScanViewVisible ? 
-                      <Connect startDeviceScan={() => this.bleHelp.bleStartScanning()}></Connect> :
-                        <Connect startDeviceScan={() => this.bleHelp.bleStartScanning()}></Connect>}
+                     
+                      <Connect startDeviceScan={() => {this.bleHelp.bleStartScanning()}}></Connect>
+                        }
                 </View>
 
               )}
@@ -808,9 +808,9 @@ export default class SweIoTConf extends Component<any, any, any> {
 
 
           </View>
-          {this.state.isStartDeviceScanViewVisible && <Connect startDeviceScan={() => this.bleHelp.bleStartScanning()}></Connect>}
+         
         </Modal>
-        {this.state.isStartDeviceScanViewVisible && <Connect startDeviceScan={() => this.bleHelp.bleStartScanning()}></Connect>}
+       
         {/*<Text style={{ fontSize: 12, fontWeight: "bold" }}> {""} </Text>
 
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -854,9 +854,10 @@ export default class SweIoTConf extends Component<any, any, any> {
             </View>*/}
 
 
-
+           
       </View>
     )
+    
   }
 
 } // SweIoTConf

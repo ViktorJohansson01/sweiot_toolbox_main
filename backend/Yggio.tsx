@@ -312,7 +312,7 @@ export default class Yggio extends Http
      *
      * @beta
      */
-    public getDeviceList() : Device[]
+    public async getDeviceList() : Promise<Device[]>
     {
         return(this.loraDeviceList.get());
 

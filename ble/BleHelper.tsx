@@ -10,8 +10,7 @@ import Ble from "./Ble";
 import { Utilities } from "../utilities/Utilities";
 import Protocol from "./Protocol";
 import AppHelper from "../AppHelper";
-
-export const TAG : string = "BleHelper";
+export const TAG: string = "BleHelper";
 
 /**
  * A help class for, Bluetooth, BLE, management
@@ -21,18 +20,17 @@ export const TAG : string = "BleHelper";
  *
  * @packageDocumentation
  */
-export default class BleHelper
-{
+export default class BleHelper {
     private static instance: BleHelper;
-    private dbg : Dbg;
-    private app : any;
-    ble : Ble;
-    bleDeviceList : DeviceList;
+    private dbg: Dbg;
+    private app: any;
+    ble: Ble;
+    bleDeviceList: DeviceList;
     server: Server;
-    devProt : Protocol;
-    http : Http;
+    devProt: Protocol;
+    http: Http;
 
-    private constructor(app : any, http : Http) // singleton
+    private constructor(app: any, http: Http) // singleton
     {
         this.dbg = new Dbg(TAG);
 
@@ -42,45 +40,38 @@ export default class BleHelper
 
         this.ble = Ble.getInstance();
 
-        this.bleDeviceList = app.bleDeviceList;
+        this.bleDeviceList = new DeviceList();
 
         this.server = Server.getInstance();
 
         this.devProt = Protocol.getInstance();
 
         this.http = http;
-
     } // constructor
 
-    public static getInstance(app : any, http : Http): BleHelper 
-    {
+    public static getInstance(app: any, http: Http): BleHelper {
         if (!this.instance) { this.instance = new BleHelper(app, http); }
 
-        return(this.instance);
+        return (this.instance);
 
     } // getInstance
 
-    public getBleDeviceList(): Array<Device>
-    {
-        console.log(this.bleDeviceList.get());
-        
+    public getBleDeviceList(): Device[] {
         return (this.bleDeviceList.get());
-        
+
     } // getBleDeviceList
 
-    public isNotAuthorized(response : any, error : string) : boolean
-    {
-        if (response !== null)
-        {
-            return(response.status === Http.ERROR_UNAUTHORIZED);
+    public isNotAuthorized(response: any, error: string): boolean {
+        if (response !== null) {
+            return (response.status === Http.ERROR_UNAUTHORIZED);
         }
-        else
-        {
-            return(error === Server.NOT_AUTHORIZED);
+        else {
+            return (error === Server.NOT_AUTHORIZED);
         }
 
     } // isNotAuthorized
-    
+
+
     /**
      * This method starts BLE scanning of SweIoT devices via bluetooth,
      * enables scanning list view where a devices may be selected
@@ -94,27 +85,23 @@ export default class BleHelper
      *
      * @beta
      */
-    public bleStartScanning() : void
-    {
+
+    public bleStartScanning(): void {
+        if (!this.app.isBleScanningViewVisible())
+            this.app.setBleScanningViewVisible(true);
+
         this.app.setStatusText("BLE scanning ...");
         this.app.setReceivedDataText("No data received ...");
-        this.bleDeviceList.clear();
-        this.app.setBleScanningViewVisible(true);
 
-        this.ble.bleScan((error: string, deviceId : string, deviceName : string | null, rssi : number | null) =>
-        {
-            if (!error)
-            {
-                if (REQUIRE_SECURE_MODE)
-                {
-                    if (!this.bleDeviceList.isAlreadyPresent(deviceId))
-                    {
-                        this.server.ownsDevice(deviceId, (error : string, response, responseJson: string) =>
-                        {
-                            if (!error)
-                            {
-                                if (responseJson) 
-                                {
+        this.bleDeviceList.clear();
+
+        this.ble.bleScan((error: string, deviceId: string, deviceName: string | null, rssi: number | null) => {
+            if (!error) {
+                if (REQUIRE_SECURE_MODE) {
+                    if (!this.bleDeviceList.isAlreadyPresent(deviceId)) {
+                        this.server.ownsDevice(deviceId, (error: string, response, responseJson: string) => {
+                            if (!error) {
+                                if (responseJson) {
                                     this.bleDeviceList.addDevOrUpdateIfPresent(deviceId, deviceName, rssi);
                                 }
                                 else // not owned
@@ -124,44 +111,41 @@ export default class BleHelper
                             }
                             else // error
                             {
-                                if (this.isNotAuthorized(response, error))
-                                {
+                                if (this.isNotAuthorized(response, error)) {
                                     this.dbg.l("ownsDevice, server API not authorized");
                                     this.bleStopScanningAndConnect(""); this.app.forceUpdate();
                                     this.app.setLoginViewVisible(true);
                                     this.app.setLoginStatusText("Session timed out, please enter login credentials");
                                 }
-                                else
-                                {
+                                else {
                                     this.dbg.e("bleStartScanning, ownsDevice " + deviceId + " ignored due to error when asking if owned, error: " + error);
                                 }
                             }
-                    
+
                         }); // ownsDevice  
                     }
                     else // already present
                     {
+
                         this.bleDeviceList.addDevOrUpdateIfPresent(deviceId, deviceName, rssi);
                     }
                 }
                 else // secure mode not required
                 {
-                    
-                    
                     this.bleDeviceList.addDevOrUpdateIfPresent(deviceId, deviceName, rssi);
-                }    
+
+                }
             }
-            else
-            {
-                this.bleStopScanningAndConnect(""); this.app.forceUpdate();
-                this.dbg.w("bleStartScanning, terminated: " + error); 
+            else {
+                this.bleStopScanningAndConnect("");
+                this.dbg.w("bleStartScanning, terminated: " + error);
                 this.app.setStatusText(error);
             }
 
         }); // bleScan
 
     } // bleStartScanning
-    
+
     /**
      * The method stops BLE scanning, connects to device, discover UART 
      * services on device, sets disconnection and reception of data listener 
@@ -175,8 +159,7 @@ export default class BleHelper
      *
      * @beta
      */
-    public bleStopScanningAndConnect(deviceId : string)
-    {
+    public bleStopScanningAndConnect(deviceId: string) {
         this.ble.bleStopDeviceScan();
         this.app.setStatusText("Stopped BLE scanning ...");
         this.app.setReceivedDataText("No data received ...");
@@ -184,46 +167,34 @@ export default class BleHelper
         if (this.app.isBleScanningViewVisible()) // timed out, cancel or device selected
         {
             this.app.setBleScanningViewVisible(false);
-
-            if (deviceId)
-            {
+            if (deviceId) {
                 this.app.setPairingDeviceView(true);
                 this.app.setStatusText("BLE connecting ...");
 
-                this.ble.bleConnect(deviceId, (error : string, result: string) =>
-                {
-                    if (!error)
-                    {
+                this.ble.bleConnect(deviceId, (error: string, result: string) => {
+                    if (!error) {
                         this.app.setStatusText("BLE device " + deviceId + " connected");
                         this.app.setPairingDeviceView(false);
                         this.app.setModeSelectorViewVisible(true);
-                        this.ble.setDisconnectListener(deviceId, (error : string, result: string) =>
-                        {
+                        this.ble.setDisconnectListener(deviceId, (error: string, result: string) => {
                             if (!error) { AppHelper.getInstance(this.app, this.http).setDisconnectState(deviceId); }
                             else { this.dbg.w(error); this.app.forceUpdate(); }
-                        
+
                         }); // setDisconnectListener
 
-                        this.ble.bleDiscoverServices((error : string, result: string) =>
-                        {
-                            if (!error)
-                            {
+                        this.ble.bleDiscoverServices((error: string, result: string) => {
+                            if (!error) {
                                 this.dbg.l(result);
-                                
-                                if (REQUIRE_SECURE_MODE)
-                                {
-                                    this.server.secureDevice(deviceId, (error : string, response, responseJson: any) =>
-                                    {
-                                        if (!error)
-                                        {
-                                            if (responseJson.secure) 
-                                            { 
+
+                                if (REQUIRE_SECURE_MODE) {
+                                    this.server.secureDevice(deviceId, (error: string, response, responseJson: any) => {
+                                        if (!error) {
+                                            if (responseJson.secure) {
                                                 this.app.setSecurityStatus(SECURE_MODE);
                                                 this.app.setPublicKeyHex(responseJson.public_key_hex);
                                             }
-                                            else 
-                                            { 
-                                            // NOTE, special in-between mode wanted by Knut ...
+                                            else {
+                                                // NOTE, special in-between mode wanted by Knut ...
                                                 this.dbg.l("bleStopScanningAndConnect, secureDevice, device should be run in unsecure mode even if secure mode is required (Knut decided)...");
                                                 if (this.server.isAuthorized()) { this.app.setSecurityStatus(AUTHORIZED_MODE); }
                                                 else { this.app.setSecurityStatus(UNSECURE_MODE); }
@@ -235,15 +206,13 @@ export default class BleHelper
                                         {
                                             // setDisconnectState is called via BLE disconnection listener
                                             if (this.ble.bleDeviceConnected()) { this.bleDisconnect(); }
-                                            
-                                            if (this.isNotAuthorized(response, error))
-                                            {
+
+                                            if (this.isNotAuthorized(response, error)) {
                                                 this.dbg.l("secureDevice, server API not authorized");
                                                 this.app.setLoginViewVisible(true);
-                                                this.app.setLoginStatusText("Session timed out, please enter login credentials");      
+                                                this.app.setLoginStatusText("Session timed out, please enter login credentials");
                                             }
-                                            else
-                                            {
+                                            else {
                                                 this.dbg.e("bleStopScanningAndConnect, secureDevice " + deviceId + " could not be checked if secure ... error: " + error);
                                                 this.app.setStatusText(error);
                                             }
@@ -255,30 +224,26 @@ export default class BleHelper
                                     AppHelper.getInstance(this.app, this.http).sendInitReqCmd();
                                 }
 
-                                this.ble.bleReceiveMessages((error : string, result: string) =>
-                                {
-                                    if (!error)
-                                    {
+                                this.ble.bleReceiveMessages((error: string, result: string) => {
+                                    if (!error) {
                                         // NOTE, 0x00 terminators may appear in answers from devices
-                                        const cleanResult : string = Utilities.remove0x00fromStr(result);
+                                        const cleanResult: string = Utilities.remove0x00fromStr(result);
                                         AppHelper.getInstance(this.app, this.http).mangageReceivedMessage(cleanResult);
                                     }
-                                    else
-                                    {
+                                    else {
+
                                         this.dbg.l(error); this.app.forceUpdate();
                                     }
 
                                 }); // bleReceiveMessages
                             }
-                            else
-                            {
+                            else {
                                 this.dbg.w(error); this.app.forceUpdate();
                             }
 
                         }); // bleDiscoverServices
                     }
-                    else
-                    {
+                    else {
                         this.dbg.w(error); this.app.forceUpdate();
                     }
                 }); // bleConnect
@@ -286,11 +251,11 @@ export default class BleHelper
         }
         else // Could this happen?
         {
-            this.app.forceUpdate();
+            //this.app.forceUpdate();
         }
 
     } // bleStopScanningAndConnect
-    
+
     /**
      * The method sends a message via bluetooth to a SweIoT devices
      *
@@ -302,18 +267,13 @@ export default class BleHelper
      *
      * @beta
      */
-    public bleSend(msg : string) : void
-    {
-        if (REQUIRE_SECURE_MODE && this.app.getSecurityStatus() === SECURE_MODE && !this.devProt.isSetPublicKeyCmd(msg))
-        {
-            this.server.signMsg(this.ble.bleDeviceIdentity(), msg, (error : string, response : any, responseJson: string) =>
-            {
-                if (!error)
-                {
+    public bleSend(msg: string): void {
+        if (REQUIRE_SECURE_MODE && this.app.getSecurityStatus() === SECURE_MODE && !this.devProt.isSetPublicKeyCmd(msg)) {
+            this.server.signMsg(this.ble.bleDeviceIdentity(), msg, (error: string, response: any, responseJson: string) => {
+                if (!error) {
                     this.app.setReceivedDataText(responseJson);
 
-                    this.ble.bleSendMessage(responseJson, (error : string, result: string) =>
-                    {
+                    this.ble.bleSendMessage(responseJson, (error: string, result: string) => {
                         if (!error) { /* this.dbg.l(result); */ }
                         else { this.dbg.l(error); }
 
@@ -321,32 +281,28 @@ export default class BleHelper
                 }
                 else // error
                 {
-                    if (this.isNotAuthorized(response, error))
-                    {
+                    if (this.isNotAuthorized(response, error)) {
                         this.dbg.l("signMsg, server API not authorized");
                         this.app.setLoginViewVisible(true);
-                        this.app.setLoginStatusText("Session timed out, please enter login credentials");      
+                        this.app.setLoginStatusText("Session timed out, please enter login credentials");
                     }
-                    else
-                    {
-                    this.dbg.e("signMsg, error: " + error);
-                    this.app.setReceivedDataText(error);
+                    else {
+                        this.dbg.e("signMsg, error: " + error);
+                        this.app.setReceivedDataText(error);
                     }
                 }
             }); // signMsg  
         }
-        else
-        {
-            this.ble.bleSendMessage(msg, (error : string, result: string) =>
-            {
-            if (!error) { /* this.dbg.l(result); */ }
-            else { this.dbg.l(error); }
+        else {
+            this.ble.bleSendMessage(msg, (error: string, result: string) => {
+                if (!error) { /* this.dbg.l(result); */ }
+                else { this.dbg.l(error); }
 
             }); // bleSendMessage
         }
 
     } // bleSend
-    
+
     /**
      * The method disconnetcs current SweIoT devices
      *
@@ -358,21 +314,18 @@ export default class BleHelper
      *
      * @beta
      */
-    public bleDisconnect() : void
-    {
+    public bleDisconnect(): void {
         this.ble.bleDisconnect()
-        .then((result : boolean) =>
-        {
-            this.dbg.l("BLE disconnect done");
-            this.app.setStatusText("BLE disconnected");
-            this.app.setPairingDeviceView(false);
-            this.app.isStartDeviceScanViewVisible(true);
-        })
-        .catch((error : Error) => 
-        { 
-            this.dbg.e("Error when disconnecting: " + error); this.app.forceUpdate();
-        });
+            .then((result: boolean) => {
+                this.dbg.l("BLE disconnect done");
+                this.app.setStatusText("BLE disconnected");
+                this.app.setPairingDeviceView(false);
+                this.app.isStartDeviceScanViewVisible(true);
+            })
+            .catch((error: Error) => {
+                this.dbg.e("Error when disconnecting: " + error); this.app.forceUpdate();
+            });
 
     } // bleDisconnect
-    
+
 } // class BleHelper

@@ -1,7 +1,6 @@
 // Copyright (c) Nilsask Software / Fredrik Nilsask for SweIoT / miThings. 
 // All rights reserved.
 
-import App from "../App";
 import Dbg from "./Dbg";
 
 /**
@@ -43,29 +42,17 @@ import Dbg from "./Dbg";
  */
 export default class DeviceList
 {
-  
-    private dbg : Dbg; 
+    private deviceList : Device[] = [];
+    private dbg : Dbg;
+    
+    constructor() 
+    { 
+        this.dbg = new Dbg(DEVICE_LIST_TAG); 
 
-    private app: App;
-    private static instance: DeviceList;
-    private static list: Array<Device>;
-    private constructor(app : any) {
-        this.dbg = new Dbg(DEVICE_LIST_TAG);
         // this.dbg.l("Constructor");
-        this.app = app;
-        
-    }
 
-    public static getInstance(app: any, list:any): DeviceList {
-        if (!DeviceList.instance) {
-            DeviceList.instance = new DeviceList(app);
-            this.list = list;
-            
-        }
+    } // constructor
 
-        return DeviceList.instance;
-    }
-   
     /**
     * Checks if a device id is already present in
     * the device list
@@ -80,10 +67,9 @@ export default class DeviceList
     */
     public isAlreadyPresent(deviceId : string) : boolean
     {
-        let list = this.app.getDeviceListArray();
-        for (let i = 0; i < list.length; i++)
+        for (let i = 0; i < this.deviceList.length; i++)
         {
-            if (list[i].id === deviceId) { return(true); }
+            if (this.deviceList[i].id === deviceId) { return(true); }
         }
 
         return(false);
@@ -118,17 +104,16 @@ export default class DeviceList
                               uartTime : string = "",
                               uartData : string = "") : boolean
     {
-        let list = this.app.getDeviceListArray();
-        for (let i = 0; i < list.length; i++)
+        for (let i = 0; i < this.deviceList.length; i++)
         {
             
-            if (list[i].id === deviceId) { return(false); }
+            if (this.deviceList[i].id === deviceId) { return(false); }
         }
         
         if (!deviceName) { deviceName = deviceId; }
         // this.dbg.l("addIfNotAlreadyPresent, Device added to list: " + deviceId);
         // this.dbg.l("addIfNotAlreadyPresent, distance: " + distance + ", amplitude: " + amplitude + ", uartTime: " + uartTime + ", uartData: " + uartData);
-        this.app.setAddDevice({id : deviceId, name : deviceName, rssi : rssi, distanceTime : distanceTime, distance : distance, amplitudeTime : amplitudeTime, amplitude : amplitude, uartTime : uartTime, uartData : uartData});
+        this.deviceList.push({id : deviceId, name : deviceName, rssi : rssi, distanceTime : distanceTime, distance : distance, amplitudeTime : amplitudeTime, amplitude : amplitude, uartTime : uartTime, uartData : uartData});
 
         return(true);
         
@@ -164,25 +149,24 @@ export default class DeviceList
                                    uartTime : string = "",
                                    uartData : string = "") : boolean
     {
-        let list = this.app.getDeviceListArray();
         if (!deviceName) { deviceName = deviceId; }
         
         
-        for (let i = 0; i < list.length; i++)
+        for (let i = 0; i < this.deviceList.length; i++)
         {
-            if (list[i].id === deviceId) 
+            if (this.deviceList[i].id === deviceId) 
             { 
                 // this.dbg.l("addDevOrUpdateIfPresent, Device updated in list: " + deviceId);
                 // this.dbg.l("addDevOrUpdateIfPresent, update device, distanceTime: " + distanceTime + ", distance: " + distance + ", amplitudeTime: " + amplitudeTime + ", amplitude: " + amplitude + ", uartTime: " + uartTime + ", uartData: " + uartData);
                 
-                list[i].name = deviceName;
-                list[i].distanceTime = distanceTime;
-                list[i].rssi = rssi;
-                list[i].distance = distance;
-                list[i].amplitudeTime = amplitudeTime;
-                list[i].amplitude = amplitude;
-                list[i].uartTime = uartTime;
-                list[i].uartData = uartData;
+                this.deviceList[i].name = deviceName;
+                this.deviceList[i].distanceTime = distanceTime;
+                this.deviceList[i].rssi = rssi;
+                this.deviceList[i].distance = distance;
+                this.deviceList[i].amplitudeTime = amplitudeTime;
+                this.deviceList[i].amplitude = amplitude;
+                this.deviceList[i].uartTime = uartTime;
+                this.deviceList[i].uartData = uartData;
 
                 return(false); 
             }
@@ -190,31 +174,26 @@ export default class DeviceList
 
         // this.dbg.l("addDevOrUpdateIfPresent, Device added to list: " + deviceId);
         // this.dbg.l("addDevOrUpdateIfPresent, added device, distanceTime: " + distanceTime + ", distance: " + distance + ", amplitudeTime: " + amplitudeTime + ", amplitude: " + amplitude + ", uartTime: " + uartTime + ", uartData: " + uartData);
-        this.app.setAddDevice({id : deviceId, name : deviceName, rssi : rssi, distanceTime : distanceTime, distance : distance, amplitudeTime : amplitudeTime, amplitude : amplitude, uartTime : uartTime, uartData : uartData});
-        
+        this.deviceList.push({id : deviceId, name : deviceName, rssi : rssi, distanceTime : distanceTime, distance : distance, amplitudeTime : amplitudeTime, amplitude : amplitude, uartTime : uartTime, uartData : uartData});
         return(true);
 
     } // addDevOrUpdateIfPresent
 
-    public get() :  Array<Device> { return(DeviceList.list); }
+    public get() :  Device[] { return(this.deviceList); }
 
     public getDevice(deviceId : string) : Device | null
     {
-        
-     
-        const list = DeviceList.list;
-        
-        for (let i = 0; i < list.length; i++)
+        for (let i = 0; i < this.deviceList.length; i++)
         {
-            if (list[i].id === deviceId) 
+            if (this.deviceList[i].id === deviceId) 
             { 
                 
-                return(list[i]); 
+                return(this.deviceList[i]); 
             }
         }
         return(null);
     }
 
-    public clear() : void { this.app.clearDeviceArray() }
+    public clear() : void { this.deviceList = []; }
 
 } // DeviceList

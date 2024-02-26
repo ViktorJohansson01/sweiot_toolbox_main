@@ -31,7 +31,7 @@ export default class Ble
     private static instance: Ble;
     private bleState : any;
     private dbg : Dbg;
-
+    scanning: boolean = false;
     private constructor() // singleton
     {
         this.dbg = new Dbg(BLE_TAG);
@@ -221,13 +221,17 @@ export default class Ble
     *
     * @beta
     */
+   //if (device?.manufacturerData && Utilities.base64ToHex(device?.manufacturerData).includes(BLE_SWEIOT_UUID))
     public bleScan(scanListener : (error : string, deviceId : string, deviceName : string | null, rssi : number | null) => void) : void
     {
-        
+        if (this.scanning) {
+            this.dbg.l("Already scanning could not start.");
+            return;
+        }
         this.dbg.l("Scanning for SweIoT device ...");
-     
+        this.scanning = true;
         let timedOut = false;
-        //setTimeout(() => { timedOut = true; }, BLE_SCANNER_TIME_OUT);
+        setTimeout(() => { timedOut = true; }, BLE_SCANNER_TIME_OUT);
         console.log(this.bleState.bleManager.state());
         if (this.bleState.bleManager) this.bleState.bleManager.startDeviceScan(null, null, (error : Error, device : Device) => 
         {
@@ -238,20 +242,9 @@ export default class Ble
                 scanListener("Scannnig timed out after " + (BLE_SCANNER_TIME_OUT / 1000) + " secs", device.id, device.name, device.rssi);
                 return;
             }
-
-            // this.dbg.l("startDeviceScan, deviceId: " + device.id);
-            //if (device?.manufacturerData && Utilities.base64ToHex(device?.manufacturerData).includes(BLE_SWEIOT_UUID))
-            if (device?.manufacturerData && Utilities.base64ToHex(device?.manufacturerData).includes(BLE_SWEIOT_UUID))
+            if (device?.manufacturerData && device?.rssi)
             {
-                // Lower RSSI value is closer (minus not considdered)
                 this.dbg.l("startDeviceScan, RSSI: " + device.rssi);
-                
-                
-                // this.dbg.l("startDeviceScan, SWEIOT_UUID: " + BLE_SWEIOT_UUID);
-                // this.dbg.l("startDeviceScan, manufacturerData, Utilities.base64ToHex: " + Utilities..base64ToHex(device.manufacturerData));
-                // this.dbg.l("BLE_SWEIOT_UUID found in manufacturerData")
-             
-                //scanListener("", device.id, device.name, device.rssi);
                 scanListener("", device.id, device.name, device.rssi);
             }
             else if (error)
@@ -288,6 +281,7 @@ export default class Ble
     public bleStopDeviceScan() : void
     {
         this.dbg.l("Stopped device scan");
+        this.scanning = false;
         if (this.bleState.bleManager) this.bleState.bleManager.stopDeviceScan();
 
     } // bleStopDeviceScan
@@ -311,6 +305,7 @@ export default class Ble
         if (this.bleState.bleManager) this.bleState.bleManager.connectToDevice(deviceId, {autoConnect:true})
         .then((device : Device) => 
         {
+            this.scanning = false;
             this.dbg.l("Connected to " + device.id);
             this.bleState.device = device;
             connectListener("", "Connected to " + device.id);

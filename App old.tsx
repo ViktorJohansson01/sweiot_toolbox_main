@@ -1656,12 +1656,12 @@ export default class SweIoTConf extends Component<any, any, any>
 
                 <Text style = {{fontWeight: "bold"}}> {"Select SweIoT BLE device: "} </Text>
 
-                <FlatList
+                {/*<FlatList
                   showsVerticalScrollIndicator = {true}
-                  data = {this.bleDeviceList.get()}
+                  data = {await this.bleDeviceList.get()}
                   renderItem = {({item}) => <this.BleItemRender device = {item} />}
                   keyExtractor = {(item: Device) => item.id}
-                />
+            />*/}
 
                 <Button 
                   title = "Cancel scanning" 
@@ -1687,12 +1687,12 @@ export default class SweIoTConf extends Component<any, any, any>
 
                 <Text style={{fontWeight: "bold"}}> {"Select SweIoT Yggio device: "} </Text>
 
-                <FlatList
+                {/*<FlatList
                   showsVerticalScrollIndicator ={true}
                   data = {this.yggio.getDeviceList()}
                   renderItem = {({item}) => <this.YggioItemRender device = {item} />}
                   keyExtractor = {(item: Device) => item.id}
-                />
+            />*/}
 
                 <Button 
                   title = "Cancel" 

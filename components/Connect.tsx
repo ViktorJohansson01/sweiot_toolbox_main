@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Theme from './Theme';
 
 const Connect = ({ startDeviceScan }: any) => {
-
+ 
     return (
         <Theme>
             {({ currentColors }: any) => (
@@ -43,7 +43,7 @@ const Connect = ({ startDeviceScan }: any) => {
                             alignItems: 'center'
                         }}>
 
-                            <TouchableOpacity accessibilityLabel="Connect button" onPress={startDeviceScan} style={[styles.button, { backgroundColor: currentColors.primaryColor }]}>
+                            <TouchableOpacity accessibilityLabel="Connect button" onPress={() => startDeviceScan()} style={[styles.button, { backgroundColor: currentColors.primaryColor }]}>
                                 <Text style={styles.buttonText}>Connect</Text>
                             </TouchableOpacity>
                         </View>

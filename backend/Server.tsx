@@ -58,7 +58,6 @@ const SIGN_MSG_URL_2 = "/devices/";
 const SIGN_MSG_URL_3 = "/sign/";
 const SIGN_MSG_METHOD = "POST";
 
-///users/namn/devices/id/keys/public
 
 const BEARER = "Bearer ";
 

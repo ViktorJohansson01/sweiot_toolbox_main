@@ -21,8 +21,10 @@
     ]
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.22.2",
     "@react-native-community/cli-platform-android": "^10.2.0",
     "@react-native-community/netinfo": "^9.3.7",
+    "@react-native-community/slider": "^4.5.0",
     "base64-js": "^1.5.1",
     "convert-string": "^0.1.0",
     "hex-my-bytes": "^1.0.0",
