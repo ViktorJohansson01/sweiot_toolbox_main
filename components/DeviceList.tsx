@@ -11,43 +11,68 @@ import _ from 'lodash';
 import Slider from '@react-native-community/slider';
 import { StorageUtil } from '../utilities/StorageUtil';
 
-const DeviceList = React.memo(({ list, bleHelp, stopDeviceScan, refreshScan }: any) => {
+const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) => {
     const [visibleItems, setVisibleItems]: any = useState([]);
     const [searchInput, setSearchInput]: any = useState('');
     const [numOfVisibleItems, setNumOfVisibleItems] = useState(0);
     const [sliderValue, setSliderValue] = useState(100);
+    const [listVisibleItems, setListVisbleItems] = useState([]);
+    const [initialLoad, setInitialLoad] = useState(false);
+
     console.log("te");
 
     useEffect(() => {
-        const id = setInterval(() => {
-            const updatedList = list;
-            if (list.length > 0) {
+        const sortListBasedOnRSSI = (list: any) => {
+            if (list.length > 1) {
+                list.sort((a: any, b: any) => (b.rssi && a.rssi) && b.rssi! - a.rssi!);
+            }
+        };
+
+        const updateVisibleItems = () => {
             let updatedVisibleItems = list;
 
             if (searchInput.length > 2) {
-                updatedVisibleItems = updatedList.filter((device: any) => device.id.includes(searchInput));
+                updatedVisibleItems = updatedVisibleItems.filter((device: any) => device.id.includes(searchInput));
                 sortListBasedOnRSSI(updatedVisibleItems);
+                setListVisbleItems(updatedVisibleItems);
+          
+                loadInitValues(updatedVisibleItems);
             } else if (sliderValue <= 100) {
-                updatedVisibleItems = updatedList.filter((device: any) => device?.rssi >= -sliderValue);
+                updatedVisibleItems = updatedVisibleItems.filter((device: any) => device?.rssi >= -sliderValue);
                 sortListBasedOnRSSI(updatedVisibleItems);
+                setListVisbleItems(updatedVisibleItems);
+                
+                loadInitValues(updatedVisibleItems);
             }
 
             if (!_.isEqual(updatedVisibleItems, visibleItems)) {
                 setNumOfVisibleItems(updatedVisibleItems.length);
                 setVisibleItems(updatedVisibleItems);
+                
             }
-            }
-        }, 1000);
+        };
+
+        const id = setInterval(updateVisibleItems, 2500);
 
         return () => {
             clearInterval(id);
         };
-    }, [list, sliderValue, searchInput]);
+    }, [list, sliderValue, searchInput, visibleItems]);
 
-    const sortListBasedOnRSSI = (list: any) => {
-        if (list.length > 1) {
-            list.sort((a: any, b: any) => (b.rssi && a.rssi) && b.rssi! - a.rssi!);
+    const loadInitValues = (updatedVisibleItems: any) => {
+        if (!initialLoad) {
+                   
+            updatedVisibleItems = updatedVisibleItems.slice(0, 10);
+            setListVisbleItems(updatedVisibleItems);
+            setInitialLoad(true);
+            
         }
+    }
+
+    const expandDeviceList = () => {
+        console.log("loading more...");
+        const initialVisibleItems = visibleItems.slice(0, visibleItems.length + 10); // Adjust the initial count as needed
+        setListVisbleItems(initialVisibleItems);
     };
 
     const restartDeviceScan = () => {
@@ -56,38 +81,41 @@ const DeviceList = React.memo(({ list, bleHelp, stopDeviceScan, refreshScan }: a
         refreshScan();
     }
 
-    const BleItemRender = React.memo(({ device, currentColors }: { device: Device, currentColors: any }) => (
-        <TouchableOpacity
-            style={{
-                marginVertical: 2,
-                backgroundColor: currentColors.backgroundColor,
-                flex: 1,
-                height: 70,
-                width: '100%',
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-            }}
-            onPress={() => bleHelp.bleStopScanningAndConnect(device.id)}
-        >
-            <View style={{
-                flexDirection: 'column'
-            }}>
-                <Text style={{ fontSize: 15, color: currentColors.textColor }}>{device.id}</Text>
-                <Text style={{
-                    marginTop: 2,
-                    color: currentColors.describingTextColor
-                }}>Type</Text>
-            </View>
-            <View style={{
-                alignItems: 'center'
-            }}>
-                <RSSIIcon rssi={device.rssi} currentColors={currentColors} />
-                <Text style={{ fontSize: 10, color: currentColors.textColor }}>{device.rssi + ' dBm'}</Text>
-            </View>
-            <SimpleLineIcons name="arrow-right" size={10} color={currentColors.primaryColor} />
-        </TouchableOpacity>
-    ));
+    const BleItemRender = React.memo(({ device, currentColors }: { device: Device, currentColors: any }) => {
+        const memoizedColors = React.useMemo(() => currentColors, [currentColors]);
+        return (
+            <TouchableOpacity
+                style={{
+                    marginVertical: 2,
+                    backgroundColor: memoizedColors.backgroundColor,
+                    flex: 1,
+                    height: 70,
+                    width: '100%',
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    alignItems: 'center',
+                }}
+                onPress={() => stopScanAndConnect(device.id)}
+            >
+                <View style={{
+                    flexDirection: 'column'
+                }}>
+                    <Text style={{ fontSize: 15, color: memoizedColors.textColor }}>{device.id}</Text>
+                    <Text style={{
+                        marginTop: 2,
+                        color: memoizedColors.describingTextColor
+                    }}>Type</Text>
+                </View>
+                <View style={{
+                    alignItems: 'center'
+                }}>
+                    <RSSIIcon rssi={device.rssi} currentColors={memoizedColors} />
+                    <Text style={{ fontSize: 10, color: memoizedColors.textColor }}>{device.rssi + ' dBm'}</Text>
+                </View>
+                <SimpleLineIcons name="arrow-right" size={10} color={memoizedColors.primaryColor} />
+            </TouchableOpacity>
+        );
+    });
 
     const RSSIIcon = ({ rssi, currentColors }: any) => (
         <View style={{}}>
@@ -136,20 +164,20 @@ const DeviceList = React.memo(({ list, bleHelp, stopDeviceScan, refreshScan }: a
                             setSliderValue(value);
                         }}
                     />
-                    <View style={{justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 30, flexDirection: 'row', width: '100%'}}>
-                    
-                    
-                    <Text style={{ fontWeight: 'bold', fontSize: 15, marginBottom: 20, marginTop: 20, backgroundColor: currentColors.secondaryColor, color: currentColors.textColor }}>
-                        Result ({numOfVisibleItems})
-                    </Text>
-                    <TouchableOpacity
-                        onPress={restartDeviceScan} accessibilityLabel='Cancel scanning'
-                        style={{}}
-                    >
-                        <Icon name="restart" size={22} color={currentColors.describingTextColor} />
-                    </TouchableOpacity>
-                
-                    
+                    <View style={{ justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 30, flexDirection: 'row', width: '100%' }}>
+
+
+                        <Text style={{ fontWeight: 'bold', fontSize: 15, marginBottom: 20, marginTop: 20, backgroundColor: currentColors.secondaryColor, color: currentColors.textColor }}>
+                            Result ({numOfVisibleItems})
+                        </Text>
+                        <TouchableOpacity
+                            onPress={restartDeviceScan} accessibilityLabel='Cancel scanning'
+                            style={{}}
+                        >
+                            <Icon name="restart" size={22} color={currentColors.describingTextColor} />
+                        </TouchableOpacity>
+
+
                     </View>
                     {numOfVisibleItems < 1 ?
                         <View style={{
@@ -178,17 +206,19 @@ const DeviceList = React.memo(({ list, bleHelp, stopDeviceScan, refreshScan }: a
 
                             <FlatList
                                 showsVerticalScrollIndicator={true}
-                                data={visibleItems}
+                                data={listVisibleItems}
                                 renderItem={({ item }) => <BleItemRender device={item} currentColors={currentColors} />}
                                 keyExtractor={(item: Device) => item.id}
                                 updateCellsBatchingPeriod={50}
                                 windowSize={10}
                                 extraData={{ searchInput, sliderValue }}
+                                onEndReached={expandDeviceList}
+                                onEndReachedThreshold={0.1}
                             />
 
                         </View>}
                     <TouchableOpacity
-                        onPress={() => {stopDeviceScan();}} accessibilityLabel='Cancel scanning'
+                        onPress={() => stopScanAndConnect('')} accessibilityLabel='Cancel scanning'
                         style={[styles.button, { position: 'absolute', bottom: 20, alignSelf: 'center' }]}
                     >
                         <Text style={styles.buttonText}>Cancel scanning</Text>

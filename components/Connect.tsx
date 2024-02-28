@@ -4,7 +4,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Theme from './Theme';
 
 const Connect = ({ startDeviceScan }: any) => {
- 
+    console.log("connect");
+    
     return (
         <Theme>
             {({ currentColors }: any) => (

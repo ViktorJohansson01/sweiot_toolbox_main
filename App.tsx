@@ -149,9 +149,7 @@ export default class SweIoTConf extends Component<any, any, any> {
     this.yggioHelp = YggioHelper.getInstance(this, this.http);
 
     this.appHelp = AppHelper.getInstance(this, this.http);
-  
-    this.bleHelp.bleStartScanning();
-
+    
   } // constructor
 
   componentDidMount() {
@@ -465,7 +463,8 @@ export default class SweIoTConf extends Component<any, any, any> {
   });
 
   render() {
-
+      console.log("hej");
+      
     return (
       <View style={{ flex: 1, flexDirection: 'column', padding: 20 }}>{/*main skärmen */}
 
@@ -476,7 +475,7 @@ export default class SweIoTConf extends Component<any, any, any> {
             {Ble.getInstance().bleDeviceConnected() ?
               (
                 <View style={{ flex: 1 }}>
-                  {this.isModeSelectorViewVisible() ?
+                 {/* {this.isModeSelectorViewVisible() ?
                     <ModeSelector sendSystemSettingsReq={this.appHelp.sendSystemSettingsReq.bind(this.appHelp)} app={this}></ModeSelector> :
                     (
                       <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -538,7 +537,7 @@ export default class SweIoTConf extends Component<any, any, any> {
                               <Text style={{ fontSize: 12, fontWeight: "bold" }}> {""} </Text>
                             )}
 
-                        </View>
+                            </View>*/}
 
                         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                           <Button
@@ -559,6 +558,7 @@ export default class SweIoTConf extends Component<any, any, any> {
 
                         </View>
 
+                        {/*
                         <View style={{ alignItems: 'center', marginVertical: 10 }} >
                           <Text> {this.state.statusText} </Text>
                         </View>
@@ -576,7 +576,7 @@ export default class SweIoTConf extends Component<any, any, any> {
 
                         <View style={this.styles.containerCol}>
 
-                          <ScrollView style={{ flex: 1, flexGrow: 10, width: '50%', height: '100%' }}>{/* meny knapparna på hem*/}
+                          <ScrollView style={{ flex: 1, flexGrow: 10, width: '50%', height: '100%' }}>
                             <this.uiBuilder.CnfSetMainBtns setCurrentConfigSetIndex={this.setCurrentConfigSetIndex.bind(this)}
                               setParTextListState={this.setParTextListState.bind(this)}
                               sendDataReqCmd={this.appHelp.sendDataReqCmd.bind(this.appHelp)}
@@ -622,7 +622,7 @@ export default class SweIoTConf extends Component<any, any, any> {
                                 data={Yggio.getInstance().getDeviceList()}
                                 renderItem={({ item }) => <this.YggioItemRender device={item} />}
                                 keyExtractor={(item: Device) => item.id}
-                          />*/}
+                          />
 
                               <Button
                                 title="Cancel"
@@ -775,34 +775,35 @@ export default class SweIoTConf extends Component<any, any, any> {
 
                             </View>}>
 
-                        </DrawerLayoutAndroid>
-                      </View>)}
+                          </DrawerLayoutAndroid>
+                      </View>)}*/}
                 </View>
               ) :
               (
-                <View style={{ flex: 1 }}>
-                  {this.state.isLoginViewVisible ? <Login
-                    loginServer={ServerHelper.getInstance(this, this.http)}
-                    saveCustomerName={this.saveCustomerName}
-                    saveCustomerPassword={this.saveCustomerPassword}
-                    getCustomerName={this.getCustomerName}
-                    getCustomerPassword={this.getCustomerPassword}
-                    isLoginButtonsDisabled={this.state.isLoginButtonsDisabled}
-                    loginStatusText={this.state.loginStatusText}
-                  /> : 
-
-                  this.state.isBleScanningViewVisible ? 
-                  <DeviceListView list={this.bleHelp.getBleDeviceList()} bleHelp={this.bleHelp} stopDeviceScan={() => this.bleHelp.bleStopScanningAndConnect('')} refreshScan={() => this.bleHelp.bleDeviceList.clear()} /> :
-
-                    this.state.isPairingDeviceView ? <Loading /> :
-                     
-                      <Connect startDeviceScan={() => {this.bleHelp.bleStartScanning()}}></Connect>
-                        }
-                </View>
+               <View/>
 
               )}
 
+<View style={{ flex: 1 }}>
+                
+                {this.state.isLoginViewVisible ? <Login
+                  loginServer={ServerHelper.getInstance(this, this.http)}
+                  saveCustomerName={this.saveCustomerName}
+                  saveCustomerPassword={this.saveCustomerPassword}
+                  getCustomerName={this.getCustomerName}
+                  getCustomerPassword={this.getCustomerPassword}
+                  isLoginButtonsDisabled={this.state.isLoginButtonsDisabled}
+                  loginStatusText={this.state.loginStatusText}
+                /> : 
 
+                this.state.isBleScanningViewVisible ? 
+                <DeviceListView list={this.bleHelp.getBleDeviceList()} stopScanAndConnect={this.bleHelp.bleStopScanningAndConnect.bind(this.bleHelp)} refreshScan={() => this.bleHelp.bleDeviceList.clear()} /> :
+
+                  this.state.isPairingDeviceView ? <Loading /> :
+                   
+                    <Connect startDeviceScan={this.bleHelp.bleStartScanning.bind(this.bleHelp)}></Connect>
+                      }
+              </View>
 
 
 

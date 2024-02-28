@@ -87,8 +87,8 @@ export default class BleHelper {
      */
 
     public bleStartScanning(): void {
-        if (!this.app.isBleScanningViewVisible())
-            this.app.setBleScanningViewVisible(true);
+      
+        this.app.setBleScanningViewVisible(true);
 
         this.app.setStatusText("BLE scanning ...");
         this.app.setReceivedDataText("No data received ...");
