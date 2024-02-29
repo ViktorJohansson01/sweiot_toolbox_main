@@ -403,9 +403,12 @@ export default class AppHelper
         else if (this.devProt.isMeasurementData(result))
         {
             this.app.setReceivedDataText(result);
-
-            let measuredData : string[] = this.devProt.getMeasurmentData(result);
-            this.app.setMeasuredDataListLength(measuredData.push(" measured data receptions: " + this.app.getAndIncreaseMeasuredDataCounter()));
+            console.log(result);
+            
+            let measuredData : Array<object> = this.devProt.getMeasurmentData(result);
+            //measuredData.push({"Measured data receptions": this.app.getAndIncreaseMeasuredDataCounter()})
+            //measuredData.push({"Measured data receptions": this.app.getAndIncreaseMeasuredDataCounter()});
+            //this.app.setMeasuredDataListLength(measuredData.push({"Measured data receptions": this.app.getAndIncreaseMeasuredDataCounter()}));
             this.app.setMeasurementDataList(measuredData);
 
             Chart.addData(this.devProt.getDistance(result), this.devProt.getAmplitude(result));

@@ -85,35 +85,19 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
         const memoizedColors = React.useMemo(() => currentColors, [currentColors]);
         return (
             <TouchableOpacity
-                style={{
-                    marginVertical: 2,
-                    backgroundColor: memoizedColors.backgroundColor,
-                    flex: 1,
-                    height: 70,
-                    width: '100%',
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                    alignItems: 'center',
-                }}
-                onPress={() => stopScanAndConnect(device.id)}
-            >
-                <View style={{
-                    flexDirection: 'column'
-                }}>
-                    <Text style={{ fontSize: 15, color: memoizedColors.textColor }}>{device.id}</Text>
-                    <Text style={{
-                        marginTop: 2,
-                        color: memoizedColors.describingTextColor
-                    }}>Type</Text>
-                </View>
-                <View style={{
-                    alignItems: 'center'
-                }}>
-                    <RSSIIcon rssi={device.rssi} currentColors={memoizedColors} />
-                    <Text style={{ fontSize: 10, color: memoizedColors.textColor }}>{device.rssi + ' dBm'}</Text>
-                </View>
-                <SimpleLineIcons name="arrow-right" size={10} color={memoizedColors.primaryColor} />
-            </TouchableOpacity>
+            style={[styles.itemContainer, { backgroundColor: memoizedColors.backgroundColor }]}
+            onPress={() => stopScanAndConnect(device.id)}
+        >
+            <View style={styles.itemTextContainer}>
+                <Text style={[styles.itemText, { color: memoizedColors.textColor }]}>{device.id}</Text>
+                <Text style={[styles.itemDescription, { color: memoizedColors.describingTextColor }]}>Type</Text>
+            </View>
+            <View style={styles.itemIconContainer}>
+                <RSSIIcon rssi={device.rssi} currentColors={memoizedColors} />
+                <Text style={[styles.itemText, { color: memoizedColors.textColor }]}>{device.rssi + ' dBm'}</Text>
+            </View>
+            <SimpleLineIcons name="arrow-right" size={10} color={memoizedColors.primaryColor} />
+        </TouchableOpacity>
         );
     });
 
@@ -195,26 +179,30 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
                         </View>
                         :
                         <View
-                            style={{
-                                width: "95%",
-                                maxHeight: "55%",
-                                borderRadius: 20,
-                                overflow: 'hidden',
-                                justifyContent: 'flex-start'
-                            }}
-                        >
-
-                            <FlatList
-                                showsVerticalScrollIndicator={true}
-                                data={listVisibleItems}
-                                renderItem={({ item }) => <BleItemRender device={item} currentColors={currentColors} />}
-                                keyExtractor={(item: Device) => item.id}
-                                updateCellsBatchingPeriod={50}
-                                windowSize={10}
-                                extraData={{ searchInput, sliderValue }}
-                                onEndReached={expandDeviceList}
-                                onEndReachedThreshold={0.1}
-                            />
+                        style={{
+                          width: "95%",
+                          flex: 1,
+                          minHeight: Dimensions.get('window').height / 3,
+                          maxHeight: Dimensions.get('window').height / 1.95,
+                          borderRadius: 20,
+                          overflow: 'hidden',
+                          justifyContent: 'flex-start',
+                          marginBottom: 20, // Adjust the marginBottom as needed
+                        }}
+                      >
+                        <FlatList
+                          showsVerticalScrollIndicator={true}
+                          data={listVisibleItems}
+                          renderItem={({ item }) => <BleItemRender device={item} currentColors={currentColors} />}
+                          keyExtractor={(item: Device) => item.id}
+                          updateCellsBatchingPeriod={50}
+                          windowSize={10}
+                          extraData={{ searchInput, sliderValue }}
+                          onEndReached={expandDeviceList}
+                          onEndReachedThreshold={0.1}
+                          style={{ flex: 1 }} // Add this line
+                        />
+            
 
                         </View>}
                     <TouchableOpacity
@@ -223,7 +211,9 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
                     >
                         <Text style={styles.buttonText}>Cancel scanning</Text>
                     </TouchableOpacity>
+                    <View style={{paddingTop: 50}}></View>
                 </View>
+                
             )}
         </Theme>
     );
@@ -264,6 +254,30 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         paddingLeft: 20
     },
+    itemContainer: {
+        marginVertical: 2,
+        flex: 1,
+        height: 70,
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+    },
+    itemTextContainer: {
+        flexDirection: 'column',
+    },
+    itemText: {
+        fontSize: 12,
+    },
+    itemDescription: {
+        marginTop: 2,
+    },
+    itemIconContainer: {
+        alignItems: 'center',
+    },
+
+    // New styles for RSSIIcon
+    rssiIconContainer: {},
 });
 
 export default DeviceList;

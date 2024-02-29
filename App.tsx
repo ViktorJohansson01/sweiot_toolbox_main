@@ -35,6 +35,7 @@ import Theme from './components/Theme';
 import Connect from './components/Connect';
 import Loading from './components/Loading';
 import _ from 'lodash';
+import Graph from './components/Graph';
 
 const APP_VERSION = "0.4.0";
 const HL = "SweIoT, " + APP_VERSION;
@@ -104,7 +105,7 @@ export default class SweIoTConf extends Component<any, any, any> {
       receivedDataText: 'No data received ...',
       versionsText: 'Versions ...',
       parameterTextList: new Array<string>(this.parListLength),
-      
+
       securityStatus: UNSECURE_MODE,
       isLoginViewVisible: REQUIRE_SECURE_MODE,
       isModeSelectorViewVisible: false,
@@ -149,13 +150,13 @@ export default class SweIoTConf extends Component<any, any, any> {
     this.yggioHelp = YggioHelper.getInstance(this, this.http);
 
     this.appHelp = AppHelper.getInstance(this, this.http);
-    
+
   } // constructor
 
   componentDidMount() {
     this.dbg.l("componentDidMount");
 
-    
+
     this.appStateSubscription = AppState.addEventListener("change", nextAppLifeState => {
       this.setState({ appLifeState: nextAppLifeState });
     });
@@ -229,7 +230,7 @@ export default class SweIoTConf extends Component<any, any, any> {
 
   public getAndIncreaseMeasuredDataCounter(): number { return (this.appLocalState.measuredDataCounter++); }
 
-  public getMeasurementDataList(): string[] { return (this.state.measurementDataList); }
+  public getMeasurementDataList(): object[] { return (this.state.measurementDataList); }
   public setMeasurementDataList(list: string[]): void { this.setState({ measurementDataList: list }); }
 
   public getVersionsText(): string { return (this.state.versionsText); }
@@ -288,9 +289,11 @@ export default class SweIoTConf extends Component<any, any, any> {
   public setPairingDeviceView(visible: boolean): void { this.setState({ isPairingDeviceView: visible }); }
   public isPairingDeviceView(): boolean { return (this.state.isPairingDeviceView); }
 
-  public setStartDeviceScanViewVisible(visible: boolean): void { this.setState({ isStartDeviceScanViewVisible: true }); }
+  public setStartDeviceScanViewVisible(visible: boolean): void { this.setState({ isStartDeviceScanViewVisible: visible }); }
   public isStartDeviceScanViewVisible(): boolean { return (this.state.isStartDeviceScanViewVisible); }
 
+  public setMeasurementDataGraphVisible(visible: boolean): void { this.setState({ isMeasurementDataGraphVisible: visible }); }
+  public isMeasurementDataGraphVisible(): boolean { return (this.state.isMeasurementDataGraphVisible); }
 
 
   /*public setAddDevice = _.throttle((newDevice: Device) => {
@@ -322,7 +325,7 @@ export default class SweIoTConf extends Component<any, any, any> {
   *
   * @beta
   */
- 
+
   public setParTextState(configSetIndex: number, parmeterIndex: number, data: string, allowedInput: boolean, warningInput: boolean) {
     if (allowedInput) {
       let copyList = [...this.state.parameterTextList];
@@ -463,8 +466,8 @@ export default class SweIoTConf extends Component<any, any, any> {
   });
 
   render() {
-      console.log("hej");
-      
+    console.log("hej");
+
     return (
       <View style={{ flex: 1, flexDirection: 'column', padding: 20 }}>{/*main skärmen */}
 
@@ -472,10 +475,10 @@ export default class SweIoTConf extends Component<any, any, any> {
         <Modal transparent={false}>
           <View style={{ flex: 1 }}>
 
-            {Ble.getInstance().bleDeviceConnected() ?
+            {/*Ble.getInstance().bleDeviceConnected() ?
               (
                 <View style={{ flex: 1 }}>
-                 {/* {this.isModeSelectorViewVisible() ?
+                  {/* {this.isModeSelectorViewVisible() ?
                     <ModeSelector sendSystemSettingsReq={this.appHelp.sendSystemSettingsReq.bind(this.appHelp)} app={this}></ModeSelector> :
                     (
                       <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -537,28 +540,28 @@ export default class SweIoTConf extends Component<any, any, any> {
                               <Text style={{ fontSize: 12, fontWeight: "bold" }}> {""} </Text>
                             )}
 
-                            </View>*/}
+                            </View>
 
-                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                          <Button
-                            title="Disconnect BLE device"
-                            onPress={() => {
-                              this.bleHelp.bleDisconnect();
-                            }}
-                          />
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                    <Button
+                      title="Disconnect BLE device"
+                      onPress={() => {
+                        this.bleHelp.bleDisconnect();
+                      }}
+                    />
 
-                          <Text style={{ fontSize: 18, fontWeight: "bold" }}> {"   "} </Text>
+                    <Text style={{ fontSize: 18, fontWeight: "bold" }}> {"   "} </Text>
 
-                          <Button
-                            title="Radar graph"
-                            onPress={() => this.setState({ isMeasurementDataGraphVisible: true })}
-                          />
+                    <Button
+                      title="Radar graph"
+                      onPress={() => this.setState({ isMeasurementDataGraphVisible: true })}
+                    />
 
 
 
-                        </View>
+                  </View>
 
-                        {/*
+                  {/*
                         <View style={{ alignItems: 'center', marginVertical: 10 }} >
                           <Text> {this.state.statusText} </Text>
                         </View>
@@ -776,42 +779,47 @@ export default class SweIoTConf extends Component<any, any, any> {
                             </View>}>
 
                           </DrawerLayoutAndroid>
-                      </View>)}*/}
+                      </View>)}
                 </View>
               ) :
               (
-               <View/>
+                <View />
 
-              )}
+              )*/}
 
-<View style={{ flex: 1 }}>
-                
-                {this.state.isLoginViewVisible ? <Login
-                  loginServer={ServerHelper.getInstance(this, this.http)}
-                  saveCustomerName={this.saveCustomerName}
-                  saveCustomerPassword={this.saveCustomerPassword}
-                  getCustomerName={this.getCustomerName}
-                  getCustomerPassword={this.getCustomerPassword}
-                  isLoginButtonsDisabled={this.state.isLoginButtonsDisabled}
-                  loginStatusText={this.state.loginStatusText}
-                /> : 
+            <View style={{ flex: 1 }}>
 
-                this.state.isBleScanningViewVisible ? 
-                <DeviceListView list={this.bleHelp.getBleDeviceList()} stopScanAndConnect={this.bleHelp.bleStopScanningAndConnect.bind(this.bleHelp)} refreshScan={() => this.bleHelp.bleDeviceList.clear()} /> :
+              {this.state.isLoginViewVisible ? <Login
+                loginServer={ServerHelper.getInstance(this, this.http)}
+                saveCustomerName={this.saveCustomerName}
+                saveCustomerPassword={this.saveCustomerPassword}
+                getCustomerName={this.getCustomerName}
+                getCustomerPassword={this.getCustomerPassword}
+                isLoginButtonsDisabled={this.state.isLoginButtonsDisabled}
+                loginStatusText={this.state.loginStatusText}
+              /> :
+
+                this.state.isBleScanningViewVisible ?
+                  <DeviceListView list={this.bleHelp.getBleDeviceList()} stopScanAndConnect={this.bleHelp.bleStopScanningAndConnect.bind(this.bleHelp)} refreshScan={() => this.bleHelp.bleDeviceList.clear()} /> :
 
                   this.state.isPairingDeviceView ? <Loading /> :
-                   
-                    <Connect startDeviceScan={this.bleHelp.bleStartScanning.bind(this.bleHelp)}></Connect>
-                      }
-              </View>
+
+                    this.state.isMeasurementDataGraphVisible && Ble.getInstance().bleDeviceConnected() ? 
+                    <Graph disconnect={() => this.bleHelp.bleDisconnect()} 
+                    measurementData={this.getMeasurementDataList()} 
+                    measurementDataLength={this.getMeasuredDataListLength()} /> :
+
+                      <Connect startDeviceScan={this.bleHelp.bleStartScanning.bind(this.bleHelp)}></Connect>
+              }
+            </View>
 
 
 
 
           </View>
-         
+
         </Modal>
-       
+
         {/*<Text style={{ fontSize: 12, fontWeight: "bold" }}> {""} </Text>
 
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -855,10 +863,10 @@ export default class SweIoTConf extends Component<any, any, any> {
             </View>*/}
 
 
-           
+
       </View>
     )
-    
+
   }
 
 } // SweIoTConf

@@ -15,51 +15,50 @@
 
 import Dbg from '../utilities/Dbg';
 import { Utilities } from "../utilities/Utilities";
-  
+
 const PROTOCOL_TAG = "Protocol";
 
-const SWEIOT_VER_REQ : string = "version?";
-const SWEIOT_VER_REQ_ANSW : string = "=version?"; // followed by version ...
-const SWEIOT_VER_REQ_ANSW_PREFIX : string = SWEIOT_VER_REQ_ANSW;
+const SWEIOT_VER_REQ: string = "version?";
+const SWEIOT_VER_REQ_ANSW: string = "=version?"; // followed by version ...
+const SWEIOT_VER_REQ_ANSW_PREFIX: string = SWEIOT_VER_REQ_ANSW;
 
-const ACC_VER_REQ : string = "acc_ver?";
-const ACC_VER_REQ_ANSW : string = "=acc_ver?"; // followed by version ...
-const ACC_VER_REQ_ANSW_PREFIX : string = ACC_VER_REQ_ANSW;
+const ACC_VER_REQ: string = "acc_ver?";
+const ACC_VER_REQ_ANSW: string = "=acc_ver?"; // followed by version ...
+const ACC_VER_REQ_ANSW_PREFIX: string = ACC_VER_REQ_ANSW;
 
-const SYS_DATA_REQ_CMD : string = "sys";
+const SYS_DATA_REQ_CMD: string = "sys";
 
-const DATA_REQ_CMD_POSTFIX : string = ":?";
+const DATA_REQ_CMD_POSTFIX: string = ":?";
 
-const CMD_MIDFIX1 : string = "?";
-const CMD_MIDFIX2 : string = ":";
-const DATA_SEPARATOR : string = ",";
+const CMD_MIDFIX1: string = "?";
+const CMD_MIDFIX2: string = ":";
+const DATA_SEPARATOR: string = ",";
 
-const CMD_REQ_ANSW_OK_CHAR : string = "=";
-const CMD_REQ_ANSW_OK : string = ":OK";
-const CMD_REQ_ANSW_NOK_CHAR : string = "*";
+const CMD_REQ_ANSW_OK_CHAR: string = "=";
+const CMD_REQ_ANSW_OK: string = ":OK";
+const CMD_REQ_ANSW_NOK_CHAR: string = "*";
 
 const FACTORY_REQ_ANSW_OK = "=factory?OK"; // error in device protocol
 
-const MEASUREMENT_DATA : string = "Measured:";
-const DISTANCE_TEXT : string = " dist: ";
+const MEASUREMENT_DATA: string = "Measured:";
+const DISTANCE_TEXT: string = " dist: ";
 const DISTANCE_MULTIPLICATOR = 1000; // From meter to millimeter
 
-const SET_PUBLIC_KEY_CMD : string = "key:";
-const REMOVE_PUBLIC_KEY_CMD : string = "rm_key";
-const REMOVE_PUBLIC_KEY_ANSW_OK : string = "=rm_key?OK"; // error in device protocol
+const SET_PUBLIC_KEY_CMD: string = "key:";
+const REMOVE_PUBLIC_KEY_CMD: string = "rm_key";
+const REMOVE_PUBLIC_KEY_ANSW_OK: string = "=rm_key?OK"; // error in device protocol
 
-const SET_DBG_MODE_ON_CMD : string = "deb_log:1";
-const SET_DBG_MODE_OFF_CMD : string = "deb_log:0";
+const SET_DBG_MODE_ON_CMD: string = "deb_log:1";
+const SET_DBG_MODE_OFF_CMD: string = "deb_log:0";
 
-const SET_CLOCK_CMD : string = "set_clk:";
+const SET_CLOCK_CMD: string = "set_clk:";
 
-const DEV_LOG_REQ_CMD : string = "cat_log";
-const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
+const DEV_LOG_REQ_CMD: string = "cat_log";
+const DEV_LOG_REQ_ANSW: string = "cat_log?OK"; // End of file ...
 
-  export default class Protocol
-  {
+export default class Protocol {
     private static instance: Protocol;
-    private dbg : Dbg;
+    private dbg: Dbg;
 
     private constructor() { this.dbg = new Dbg(PROTOCOL_TAG); } // singleton constructor
 
@@ -74,15 +73,13 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
     *
     * @beta
     */
-    public static getInstance(): Protocol 
-     {
-        if (!this.instance) 
-        {
+    public static getInstance(): Protocol {
+        if (!this.instance) {
             this.instance = new Protocol();
         }
- 
-        return(this.instance);
- 
+
+        return (this.instance);
+
     } // bleGetInstance
 
     /**
@@ -96,9 +93,8 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getSetPublicKeyCmd(pubKey : string) : string
-    {
-        return(SET_PUBLIC_KEY_CMD + pubKey);
+    public getSetPublicKeyCmd(pubKey: string): string {
+        return (SET_PUBLIC_KEY_CMD + pubKey);
 
     } // getSetPublicKeyCmd
 
@@ -113,9 +109,8 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getRemovePublicKeyCmd() : string
-    {
-        return(REMOVE_PUBLIC_KEY_CMD);
+    public getRemovePublicKeyCmd(): string {
+        return (REMOVE_PUBLIC_KEY_CMD);
 
     } // getRemovePublicKeyCmd
 
@@ -130,16 +125,13 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public isSetPublicKeyCmd(cmd : string) : boolean
-    {
-        if (cmd != null)
-        {
-            if (cmd.length >= SET_PUBLIC_KEY_CMD.length)
-            {
-                return(cmd.substring(0, SET_PUBLIC_KEY_CMD.length) === SET_PUBLIC_KEY_CMD);
+    public isSetPublicKeyCmd(cmd: string): boolean {
+        if (cmd != null) {
+            if (cmd.length >= SET_PUBLIC_KEY_CMD.length) {
+                return (cmd.substring(0, SET_PUBLIC_KEY_CMD.length) === SET_PUBLIC_KEY_CMD);
             }
         }
-        return(false);
+        return (false);
 
     } // isSetPublicKeyCmd
 
@@ -154,16 +146,13 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public isRemovePublicKeyCmd(cmd : string) : boolean
-    {
-        if (cmd != null)
-        {
-            if (cmd.length >= REMOVE_PUBLIC_KEY_CMD.length)
-            {
-                return(cmd.substring(0, REMOVE_PUBLIC_KEY_CMD.length) === REMOVE_PUBLIC_KEY_CMD);
+    public isRemovePublicKeyCmd(cmd: string): boolean {
+        if (cmd != null) {
+            if (cmd.length >= REMOVE_PUBLIC_KEY_CMD.length) {
+                return (cmd.substring(0, REMOVE_PUBLIC_KEY_CMD.length) === REMOVE_PUBLIC_KEY_CMD);
             }
         }
-        return(false);
+        return (false);
 
     } // isRemovePublicKeyCmd
 
@@ -178,9 +167,8 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getSetDbgModeOnCmd() : string
-    {
-        return(SET_DBG_MODE_ON_CMD);
+    public getSetDbgModeOnCmd(): string {
+        return (SET_DBG_MODE_ON_CMD);
 
     } // getSetDbgModeOnCmd
 
@@ -195,9 +183,8 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getSetDbgModeOffCmd() : string
-    {
-        return(SET_DBG_MODE_OFF_CMD);
+    public getSetDbgModeOffCmd(): string {
+        return (SET_DBG_MODE_OFF_CMD);
 
     } // getSetDbgModeOffCmd
 
@@ -212,9 +199,8 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getSetClockCmd() : string
-    {
-        return(SET_CLOCK_CMD + (Date.now()/1000));
+    public getSetClockCmd(): string {
+        return (SET_CLOCK_CMD + (Date.now() / 1000));
 
     } // getSetClockCmd
 
@@ -229,9 +215,8 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getDevLogReqCmd() : string
-    {
-        return(DEV_LOG_REQ_CMD);
+    public getDevLogReqCmd(): string {
+        return (DEV_LOG_REQ_CMD);
 
     } // getDevLogReqCmd
 
@@ -246,9 +231,8 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getSweIoTVerReqCmd() : string
-    {
-        return(SWEIOT_VER_REQ);
+    public getSweIoTVerReqCmd(): string {
+        return (SWEIOT_VER_REQ);
 
     } // getSweIoTVerReqCmd
 
@@ -263,16 +247,13 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public isSweIoTVerReqAnsw(version : string) : boolean
-    {
-        if (version != null)
-        {
-            if (version.length >= SWEIOT_VER_REQ_ANSW.length)
-            {
-                return(version.substring(0, SWEIOT_VER_REQ_ANSW.length) === SWEIOT_VER_REQ_ANSW);
+    public isSweIoTVerReqAnsw(version: string): boolean {
+        if (version != null) {
+            if (version.length >= SWEIOT_VER_REQ_ANSW.length) {
+                return (version.substring(0, SWEIOT_VER_REQ_ANSW.length) === SWEIOT_VER_REQ_ANSW);
             }
         }
-        return(false);
+        return (false);
 
     } // isSweIoTVerReqAnsw
 
@@ -287,15 +268,12 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public removeSweIoTVerReqAnswPrefix(version : string) : string
-    {
-        if (this.isSweIoTVerReqAnsw(version))
-        {
-            return(version.substring(SWEIOT_VER_REQ_ANSW_PREFIX.length));
+    public removeSweIoTVerReqAnswPrefix(version: string): string {
+        if (this.isSweIoTVerReqAnsw(version)) {
+            return (version.substring(SWEIOT_VER_REQ_ANSW_PREFIX.length));
         }
-        else
-        {
-            return("");
+        else {
+            return ("");
         }
 
     } // removeSweIoTVerReqAnswPrefix
@@ -311,15 +289,12 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getSweIoTVerReqAnswDigits(version : string) : string
-    {
-        if (this.isSweIoTVerReqAnsw(version))
-        {
-            return(version.substring(SWEIOT_VER_REQ_ANSW_PREFIX.length).split(" ")[0]);
+    public getSweIoTVerReqAnswDigits(version: string): string {
+        if (this.isSweIoTVerReqAnsw(version)) {
+            return (version.substring(SWEIOT_VER_REQ_ANSW_PREFIX.length).split(" ")[0]);
         }
-        else
-        {
-            return("");
+        else {
+            return ("");
         }
 
     } // getSweIoTVerReqAnswDigits
@@ -335,9 +310,8 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getAccVerReqCmd() : string
-    {
-        return(ACC_VER_REQ);
+    public getAccVerReqCmd(): string {
+        return (ACC_VER_REQ);
 
     } // getAccVerReqCmd
 
@@ -352,16 +326,13 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public isAccVerReqAnsw(version : string) : boolean
-    {
-        if (version != null)
-        {
-            if (version.length >= ACC_VER_REQ_ANSW.length)
-            {
-                return(version.substring(0, ACC_VER_REQ_ANSW.length) === ACC_VER_REQ_ANSW);
+    public isAccVerReqAnsw(version: string): boolean {
+        if (version != null) {
+            if (version.length >= ACC_VER_REQ_ANSW.length) {
+                return (version.substring(0, ACC_VER_REQ_ANSW.length) === ACC_VER_REQ_ANSW);
             }
         }
-        return(false);
+        return (false);
 
     } // isAccVerReqAnsw
 
@@ -376,15 +347,12 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public removeAccVerReqAnswPrefix(version : string) : string
-    {
-        if (this.isAccVerReqAnsw(version))
-        {
-            return(version.substring(ACC_VER_REQ_ANSW_PREFIX.length));
+    public removeAccVerReqAnswPrefix(version: string): string {
+        if (this.isAccVerReqAnsw(version)) {
+            return (version.substring(ACC_VER_REQ_ANSW_PREFIX.length));
         }
-        else
-        {
-            return("");
+        else {
+            return ("");
         }
 
     } // removeAccVerReqAnswPrefix
@@ -402,19 +370,15 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public isCmdReqAnswOK(result : string) : boolean
-    {
-        if (result != null)
-        {
-            if (result.length >= CMD_REQ_ANSW_OK_CHAR.length)
-            {
-                if (result.substring(0, CMD_REQ_ANSW_OK_CHAR.length) === CMD_REQ_ANSW_OK_CHAR)
-                {
-                    return(result.includes(CMD_REQ_ANSW_OK));
+    public isCmdReqAnswOK(result: string): boolean {
+        if (result != null) {
+            if (result.length >= CMD_REQ_ANSW_OK_CHAR.length) {
+                if (result.substring(0, CMD_REQ_ANSW_OK_CHAR.length) === CMD_REQ_ANSW_OK_CHAR) {
+                    return (result.includes(CMD_REQ_ANSW_OK));
                 }
             }
         }
-        return(false);
+        return (false);
 
     } // isCmdReqAnswOK
 
@@ -430,16 +394,13 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      * @beta
      */
     // Fix to manage error in sweiot unit's protocol (factory answer)
-    public isFactoryReqAnswOK(result : string) : boolean
-    {
-        if (result != null)
-        {
-            if (result.length >= FACTORY_REQ_ANSW_OK.length)
-            {
-                return((result.substring(0, FACTORY_REQ_ANSW_OK.length) === FACTORY_REQ_ANSW_OK));
+    public isFactoryReqAnswOK(result: string): boolean {
+        if (result != null) {
+            if (result.length >= FACTORY_REQ_ANSW_OK.length) {
+                return ((result.substring(0, FACTORY_REQ_ANSW_OK.length) === FACTORY_REQ_ANSW_OK));
             }
         }
-        return(false);
+        return (false);
 
     } // isFactoryReqAnswOK
 
@@ -455,16 +416,13 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public isCmdReqAnswNOK(result : string) : boolean
-    {
-        if (result != null)
-        {
-            if (result.length >= CMD_REQ_ANSW_NOK_CHAR.length)
-            {
-                return(result.substring(0, CMD_REQ_ANSW_NOK_CHAR.length) === CMD_REQ_ANSW_NOK_CHAR);
+    public isCmdReqAnswNOK(result: string): boolean {
+        if (result != null) {
+            if (result.length >= CMD_REQ_ANSW_NOK_CHAR.length) {
+                return (result.substring(0, CMD_REQ_ANSW_NOK_CHAR.length) === CMD_REQ_ANSW_NOK_CHAR);
             }
         }
-        return(false);
+        return (false);
 
     } // isCmdReqAnswNOK
 
@@ -479,25 +437,20 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public isDataReqAnsw(data : string) : boolean
-    {
-        if (data != null)
-        {
-            if (data.length >= CMD_REQ_ANSW_OK_CHAR.length)
-            {
-                if (data.substring(0, CMD_REQ_ANSW_OK_CHAR.length) === CMD_REQ_ANSW_OK_CHAR)
-                {
-                    let cmd : string[] = data.substring(CMD_REQ_ANSW_OK_CHAR.length).split(CMD_MIDFIX1);
-                    
-                    if (cmd[0] === SYS_DATA_REQ_CMD || Utilities.isInteger(cmd[0]))
-                    {
-                        return(true); // =sys? or =n? (where n is any number of digits)
+    public isDataReqAnsw(data: string): boolean {
+        if (data != null) {
+            if (data.length >= CMD_REQ_ANSW_OK_CHAR.length) {
+                if (data.substring(0, CMD_REQ_ANSW_OK_CHAR.length) === CMD_REQ_ANSW_OK_CHAR) {
+                    let cmd: string[] = data.substring(CMD_REQ_ANSW_OK_CHAR.length).split(CMD_MIDFIX1);
+
+                    if (cmd[0] === SYS_DATA_REQ_CMD || Utilities.isInteger(cmd[0])) {
+                        return (true); // =sys? or =n? (where n is any number of digits)
                     }
                 }
             }
         }
 
-        return(false);
+        return (false);
 
     } // isDataReqAnsw
 
@@ -512,16 +465,13 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public removeDataReqAnswPrefix(data : string) : string
-    {
-        if (this.isDataReqAnsw(data))
-        {
-            let reqData : string[] = data.substring(CMD_REQ_ANSW_OK_CHAR.length).split(CMD_MIDFIX1);
-            return(reqData[1]);
+    public removeDataReqAnswPrefix(data: string): string {
+        if (this.isDataReqAnsw(data)) {
+            let reqData: string[] = data.substring(CMD_REQ_ANSW_OK_CHAR.length).split(CMD_MIDFIX1);
+            return (reqData[1]);
         }
-        else
-        {
-            return("");
+        else {
+            return ("");
         }
 
     } // removeDataReqAnswPrefix
@@ -538,9 +488,8 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getDataReqCmd(type : string) : string
-    {
-        return(type + DATA_REQ_CMD_POSTFIX);
+    public getDataReqCmd(type: string): string {
+        return (type + DATA_REQ_CMD_POSTFIX);
 
     } // getDataReqCmd
 
@@ -556,13 +505,12 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public parseDataReqResult(result : string, maxLength : number) : string[]
-    {
-        let parsedResult : string[] = result.split(DATA_SEPARATOR, maxLength);
+    public parseDataReqResult(result: string, maxLength: number): string[] {
+        let parsedResult: string[] = result.split(DATA_SEPARATOR, maxLength);
 
         // this.dbg.l("parseReqData: " + parsedResult);
 
-        return(parsedResult);
+        return (parsedResult);
 
     } // parseDataReqResult
 
@@ -577,25 +525,20 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public isDataSetAnsw(data : string) : boolean
-    {
-        if (data != null)
-        {
-            if (data.length >= CMD_REQ_ANSW_OK_CHAR.length)
-            {
-                if (data.substring(0, CMD_REQ_ANSW_OK_CHAR.length) === CMD_REQ_ANSW_OK_CHAR)
-                {
-                    let cmd : string[] = data.substring(CMD_REQ_ANSW_OK_CHAR.length).split(CMD_MIDFIX2);
-                    
-                    if (cmd[0] === SYS_DATA_REQ_CMD || Utilities.isInteger(cmd[0]))
-                    {
-                        return(true); // =sys: or =n: (where n is any number of digits)
+    public isDataSetAnsw(data: string): boolean {
+        if (data != null) {
+            if (data.length >= CMD_REQ_ANSW_OK_CHAR.length) {
+                if (data.substring(0, CMD_REQ_ANSW_OK_CHAR.length) === CMD_REQ_ANSW_OK_CHAR) {
+                    let cmd: string[] = data.substring(CMD_REQ_ANSW_OK_CHAR.length).split(CMD_MIDFIX2);
+
+                    if (cmd[0] === SYS_DATA_REQ_CMD || Utilities.isInteger(cmd[0])) {
+                        return (true); // =sys: or =n: (where n is any number of digits)
                     }
                 }
             }
         }
 
-        return(false);
+        return (false);
 
     } // isDataSetAnsw
 
@@ -613,31 +556,27 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getDataSetCmd(preFix : string, parList : string[], parListLength : number) : string
-    {
+    public getDataSetCmd(preFix: string, parList: string[], parListLength: number): string {
         let command = preFix + CMD_MIDFIX2;
 
-        for (let i = 0; i < parListLength; i++)
-        {
-            if ( i == (parListLength-1))
-            {
+        for (let i = 0; i < parListLength; i++) {
+            if (i == (parListLength - 1)) {
                 // NOTE, this is a fix since 0x00 is present in responses from devices, now instead checked
                 // when all messages are received
                 // command += (Utilities.remove0x00fromStr(parList[i])); // last parameter
                 command += (parList[i]); // last parameter
             }
-            else
-            {
+            else {
                 command += (parList[i] + DATA_SEPARATOR);
             }
         }
 
         // this.dbg.l("getCnfSetCmd, command: " + command);
-        
-        return(command);
+
+        return (command);
 
     } // getDataSetCmd
-    
+
 
     /**
      * Checks if this is measurement data 
@@ -650,16 +589,13 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public isMeasurementData(data : string) : boolean
-    {
-        if (data != null)
-        {
-            if (data.length >= MEASUREMENT_DATA.length)
-            {
-                return(data.substring(0, MEASUREMENT_DATA.length) === MEASUREMENT_DATA);
+    public isMeasurementData(data: string): boolean {
+        if (data != null) {
+            if (data.length >= MEASUREMENT_DATA.length) {
+                return (data.substring(0, MEASUREMENT_DATA.length) === MEASUREMENT_DATA);
             }
         }
-        return(false);
+        return (false);
 
     } // isMeasurementData
 
@@ -674,19 +610,35 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getMeasurmentData(data : string) : string[]
-    {
-        let measuredData : string[] = [];
+    public getMeasurmentData(data: string): Array<object> {
+        let measuredData: Array<object> = new Array;
 
-        if (this.isMeasurementData(data))
-        {
+        if (this.isMeasurementData(data)) {
             // Measured: dist: 0.00, ampl: 0, occupied: 0, volt/batt: 3.504v (2), temp: 22.0, minor: 0016, major: 4000
-            measuredData = data.substring(MEASUREMENT_DATA.length).split(DATA_SEPARATOR);
-            measuredData[0] = DISTANCE_TEXT + this.getDistance(data); // multiply distance with DISTANCE_MULTIPLICATOR
+            //measuredData = data.substring(MEASUREMENT_DATA.length).split(DATA_SEPARATOR);
+            //measuredData[0] = DISTANCE_TEXT + this.getDistance(data); // multiply distance with DISTANCE_MULTIPLICATOR
             // this.dbg.l("getMeasurmentData, measuredData[0]: " + measuredData[0]);
-        }
+            // Replace commas with semicolons and remove parentheses to make it a valid JSON string
+            const measuredDataString = data.split("Measured: ")[1];
+          
+                const keyValuePairs = measuredDataString.split(', ');
 
-        return(measuredData);
+                measuredData = keyValuePairs.map(pair => {
+                    const [key, rawValue] = pair.split(':');
+                    const value = rawValue ? rawValue.trim() : '';
+                    let variable;
+                    if (key === 'volt/batt') {
+                        variable = 'volt';
+                    } else {
+                      variable = key.trim();
+                    }
+                    return { variable: variable.charAt(0).toUpperCase() + variable.slice(1), value };
+                });
+          
+        }
+       
+
+        return (measuredData);
 
     } // getMeasurmentData
 
@@ -701,18 +653,16 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getDistance(data : string) : string
-    {
-        let distance : string = "";
+    public getDistance(data: string): string {
+        let distance: string = "";
 
-        if (this.isMeasurementData(data))
-        {
+        if (this.isMeasurementData(data)) {
             // Measured: dist: 0.00, ampl: 0, occupied: 0, volt/batt: 3.504v (2), temp: 22.0, minor: 0016, major: 4000
             distance = data.substring(MEASUREMENT_DATA.length).split(DATA_SEPARATOR)[0].substring(1).split(CMD_MIDFIX2)[1].substring(1);
             distance = (Number(distance) * DISTANCE_MULTIPLICATOR).toString();
         }
 
-        return(distance);
+        return (distance);
 
     } // getDistance
 
@@ -727,17 +677,15 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getAmplitude(data : string) : string
-    {
-        let amplitude : string = "";
+    public getAmplitude(data: string): string {
+        let amplitude: string = "";
 
-        if (this.isMeasurementData(data))
-        {
+        if (this.isMeasurementData(data)) {
             // Measured: dist: 0.00, ampl: 0, occupied: 0, volt/batt: 3.504v (2), temp: 22.0, minor: 0016, major: 4000
             amplitude = data.substring(MEASUREMENT_DATA.length).split(DATA_SEPARATOR)[1].substring(1).split(CMD_MIDFIX2)[1].substring(1);
         }
 
-        return(amplitude);
+        return (amplitude);
 
     } // getAmplitude
 
@@ -752,17 +700,15 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getOccupied(data : string) : string
-    {
-        let occupied : string = "";
+    public getOccupied(data: string): string {
+        let occupied: string = "";
 
-        if (this.isMeasurementData(data))
-        {
+        if (this.isMeasurementData(data)) {
             // Measured: dist: 0.00, ampl: 0, occupied: 0, volt/batt: 3.504v (2), temp: 22.0, minor: 0016, major: 4000
             occupied = data.substring(MEASUREMENT_DATA.length).split(DATA_SEPARATOR)[2].substring(1).split(CMD_MIDFIX2)[1].substring(1);
         }
 
-        return(occupied);
+        return (occupied);
 
     } // getOccupied
 
@@ -777,9 +723,8 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public isDevLogFileData(data : string) : boolean
-    {
-        return(false); // TODO
+    public isDevLogFileData(data: string): boolean {
+        return (false); // TODO
 
     } // isDevLogFileData
 
@@ -794,16 +739,14 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public getDevLogFileData(data : string) : string
-    {
-        let devLogFileData : string = "";
+    public getDevLogFileData(data: string): string {
+        let devLogFileData: string = "";
 
-        if (this.isDevLogFileData(data))
-        {
+        if (this.isDevLogFileData(data)) {
             devLogFileData = data; // TODO
         }
 
-        return(devLogFileData);
+        return (devLogFileData);
 
     } // getDevLogFileData
 
@@ -818,12 +761,11 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public isFirstCharNo(result : string) : boolean
-    {
-        return(result.charCodeAt(0) >= 48 && result.charCodeAt(0) <= 57); 
+    public isFirstCharNo(result: string): boolean {
+        return (result.charCodeAt(0) >= 48 && result.charCodeAt(0) <= 57);
 
     } // isFirstCharNo
-    
+
     /**
      * Checks if first character is 'd'
      *
@@ -835,10 +777,9 @@ const DEV_LOG_REQ_ANSW : string = "cat_log?OK"; // End of file ...
      *
      * @beta
      */
-    public isHeartbeat(result : string) : boolean
-    {
-        return(result.charCodeAt(0) == 100 /* 'd' */); 
+    public isHeartbeat(result: string): boolean {
+        return (result.charCodeAt(0) == 100 /* 'd' */);
 
     } // isHeartbeat
 
-  } // Protocol
+} // Protocol
