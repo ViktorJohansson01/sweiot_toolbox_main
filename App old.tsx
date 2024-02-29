@@ -574,8 +574,8 @@ export default class SweIoTConf extends Component<any, any, any>
       // this.dbg.l("mangageReceivedMessage, measurement distance: " + this.devProt.getDistance(result));
       // this.dbg.l("mangageReceivedMessage, measurement amplitude: " + this.devProt.getAmplitude(result));
 
-      let measuredData : string[] = this.devProt.getMeasurmentData(result);
-      this.measuredDataListLength = measuredData.push(" measured data receptions: " + this.appLocalState.measuredDataCounter++);
+      let measuredData : object[] = this.devProt.getMeasurmentData(result);
+      this.measuredDataListLength = measuredData.push({" measured data receptions: ": this.appLocalState.measuredDataCounter++});
       this.setState({measurementDataList : measuredData});
 
       Chart.addData(this.devProt.getDistance(result), this.devProt.getAmplitude(result));

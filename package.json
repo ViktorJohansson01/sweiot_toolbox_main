@@ -1,5 +1,5 @@
 {
-  "name": "SweIoTConf",
+  "name": "Viktor_Toolbox",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -45,6 +45,7 @@
     "react-native-vector-icons": "^10.0.3",
     "react-native-web": "^0.18.9",
     "react-refresh": "^0.14.0",
+    "react-scripts": "^5.0.1",
     "recharts": "^2.4.1"
   },
   "devDependencies": {

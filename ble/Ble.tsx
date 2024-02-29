@@ -242,7 +242,7 @@ export default class Ble
                 scanListener("Scannnig timed out after " + (BLE_SCANNER_TIME_OUT / 1000) + " secs", device.id, device.name, device.rssi);
                 return;
             }
-            if (device?.manufacturerData)
+            if (device?.manufacturerData && Utilities.base64ToHex(device?.manufacturerData).includes(BLE_SWEIOT_UUID))
             {
                 this.dbg.l("startDeviceScan, RSSI: " + device.rssi);
                 scanListener("", device.id, device.name, device.rssi);

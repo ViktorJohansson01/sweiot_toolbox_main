@@ -12,6 +12,7 @@ const ModeSelector = ({ sendSystemSettingsReq, app }: any) => {
     sendSystemSettingsReq(`sys:${selectedApp},,,,,1`);
     console.log(`sys:${selectedApp},,,,,1`);
     app.setModeSelectorViewVisible(false);
+    app.setMeasurementDataGraphVisible(true);
   }, 1000); 
 
   const ModeItemRender = React.memo(({ data, currentColors }: { data: any, currentColors: any }) => (

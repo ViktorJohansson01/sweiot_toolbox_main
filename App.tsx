@@ -146,7 +146,7 @@ export default class SweIoTConf extends Component<any, any, any> {
     this.http = new Http();
 
     this.bleHelp = BleHelper.getInstance(this, this.http);
-
+    
     this.yggioHelp = YggioHelper.getInstance(this, this.http);
 
     this.appHelp = AppHelper.getInstance(this, this.http);
@@ -800,15 +800,16 @@ export default class SweIoTConf extends Component<any, any, any> {
               /> :
 
                 this.state.isBleScanningViewVisible ?
-                  <DeviceListView list={this.bleHelp.getBleDeviceList()} stopScanAndConnect={this.bleHelp.bleStopScanningAndConnect.bind(this.bleHelp)} refreshScan={() => this.bleHelp.bleDeviceList.clear()} /> :
+                  <DeviceListView list={this.bleHelp.getBleDeviceList()} stopScanAndConnect={this.bleHelp.bleStopScanningAndConnect.bind(this.bleHelp)} refreshScan={this.bleHelp.bleDeviceList.clear} /> :
 
                   this.state.isPairingDeviceView ? <Loading /> :
+                  
+                  this.state.isModeSelectorViewVisible ? <ModeSelector sendSystemSettingsReq={this.appHelp.sendSystemSettingsReq.bind(this.appHelp)} app={this}></ModeSelector> :
 
                     this.state.isMeasurementDataGraphVisible && Ble.getInstance().bleDeviceConnected() ? 
                     <Graph disconnect={() => this.bleHelp.bleDisconnect()} 
                     measurementData={this.getMeasurementDataList()} 
                     measurementDataLength={this.getMeasuredDataListLength()} /> :
-
                       <Connect startDeviceScan={this.bleHelp.bleStartScanning.bind(this.bleHelp)}></Connect>
               }
             </View>

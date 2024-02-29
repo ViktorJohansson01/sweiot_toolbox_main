@@ -5,7 +5,7 @@ import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity, TextInp
 import { Device } from 'react-native-ble-plx';
 
 const Login = ({ loginStatusText, saveCustomerName, saveCustomerPassword, getCustomerName, getCustomerPassword, isLoginButtonsDisabled, loginServer }: any) => {
-    const imageSource: ImageSourcePropType = require('../imgs/SweIot.jpg');
+    const imageSource: ImageSourcePropType = require('../android/app/src/main/res/SweIot.jpg');
     const TEST_USER_NAME = "superknut";
     const TEST_USER_PASSWORD = "superknutpassword_3951";
     return (

@@ -6,6 +6,7 @@ import { LineChart } from "react-native-chart-kit";
 import { Chart } from '../utilities/Chart';
 import { disconnect } from 'react-native-ble-manager';
 import { NativeBaseProvider } from 'native-base';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 const InfoItem = ({ variable, value }: any) => (
     <View style={{ flexDirection: 'row', paddingHorizontal: 15, alignItems: 'center', justifyContent: 'space-between', width: '100%', height: 30, paddingHorizontal: 30 }}>
@@ -56,7 +57,7 @@ const Graph = ({ measurementData, measurementDataLength, disconnect }: any) => {
                             <View style={{ marginTop: 40, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}></View>
                             <Text style={{width: '100%', marginLeft: 40, fontSize: 16}}>Settings</Text>
                             <View style={{ backgroundColor: currentColors.backgroundColor, width: '90%', marginTop: 20, height: 100, justifyContent: 'center', borderRadius: 20 }}>
-
+                            <SimpleLineIcons name="arrow-right" size={10} color={currentColors.primaryColor} />
                                 <TouchableOpacity
                                     onPress={disconnect}
                                     accessibilityLabel='Cancel scanning'

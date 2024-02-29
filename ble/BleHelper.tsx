@@ -175,7 +175,6 @@ export default class BleHelper {
                     if (!error) {
                         this.app.setStatusText("BLE device " + deviceId + " connected");
                         this.app.setPairingDeviceView(false);
-                        this.app.setMeasurementDataGraphVisible(true);
                         this.app.setModeSelectorViewVisible(true);
                         this.ble.setDisconnectListener(deviceId, (error: string, result: string) => {
                             if (!error) { AppHelper.getInstance(this.app, this.http).setDisconnectState(deviceId); }

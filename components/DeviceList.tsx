@@ -32,7 +32,14 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
             let updatedVisibleItems = list;
 
             if (searchInput.length > 2) {
-                updatedVisibleItems = updatedVisibleItems.filter((device: any) => device.id.includes(searchInput));
+                updatedVisibleItems = updatedVisibleItems.filter((device: any) => {
+                    const deviceIdWithoutColons = device.id.toUpperCase().replace(/:/g, '');
+                    const searchInputWithoutColons = searchInput.toUpperCase().replace(/:/g, '');
+                  
+                    const searchPattern = new RegExp(`.*${searchInputWithoutColons}.*`);
+                  
+                    return searchPattern.test(deviceIdWithoutColons);
+                  });
                 sortListBasedOnRSSI(updatedVisibleItems);
                 setListVisbleItems(updatedVisibleItems);
           
@@ -52,7 +59,7 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
             }
         };
 
-        const id = setInterval(updateVisibleItems, 2500);
+        const id = setInterval(updateVisibleItems, 500);
 
         return () => {
             clearInterval(id);
@@ -61,7 +68,6 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
 
     const loadInitValues = (updatedVisibleItems: any) => {
         if (!initialLoad) {
-                   
             updatedVisibleItems = updatedVisibleItems.slice(0, 10);
             setListVisbleItems(updatedVisibleItems);
             setInitialLoad(true);
@@ -78,6 +84,8 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
     const restartDeviceScan = () => {
         list = [];
         setVisibleItems([]);
+        setListVisbleItems([]);
+        setNumOfVisibleItems(0);
         refreshScan();
     }
 
