@@ -76,11 +76,12 @@ export default class SweIoTConf extends Component<any, any, any> {
   currentConfigSetIndex: number = -1; // No value
   devProt: Protocol;
   http: Http;
-  measuredDataListLength = NO_OF_MEASUREMENT_DATA;
+  measuredDataListLength = 0;
   drawer: any;
   bleHelp: BleHelper;
   yggioHelp: YggioHelper;
   appHelp: AppHelper;
+  measuredDataCounter = 1;
   deviceState: any;
   public constructor(props: any) {
     super(props);
@@ -126,8 +127,6 @@ export default class SweIoTConf extends Component<any, any, any> {
     };
 
     for (let i = 0; i < this.parListLength; i++) { this.state.parameterTextList[i] = "empty"; }
-
-    for (let i = 0; i < NO_OF_MEASUREMENT_DATA; i++) { this.state.measurementDataList[i] = "no data received yet"; }
 
     this.appLocalState =
     {
@@ -228,7 +227,9 @@ export default class SweIoTConf extends Component<any, any, any> {
   public getMeasuredDataListLength(): number { return (this.measuredDataListLength); }
   public setMeasuredDataListLength(length: number): void { this.measuredDataListLength = length; }
 
-  public getAndIncreaseMeasuredDataCounter(): number { return (this.appLocalState.measuredDataCounter++); }
+  public getMeasuredDataCounter(): number { return (this.measuredDataCounter); }
+  public setMeasuredDataCounter(value : number): number { return (this.measuredDataCounter = value); }
+  public getAndIncreaseMeasuredDataCounter(): number { return (this.measuredDataCounter++); }
 
   public getMeasurementDataList(): object[] { return (this.state.measurementDataList); }
   public setMeasurementDataList(list: string[]): void { this.setState({ measurementDataList: list }); }
@@ -809,7 +810,7 @@ export default class SweIoTConf extends Component<any, any, any> {
                     this.state.isMeasurementDataGraphVisible && Ble.getInstance().bleDeviceConnected() ? 
                     <Graph disconnect={() => this.bleHelp.bleDisconnect()} 
                     measurementData={this.getMeasurementDataList()} 
-                    measurementDataLength={this.getMeasuredDataListLength()} /> :
+                    getAndIncreaseMeasuredDataCounter={this.getAndIncreaseMeasuredDataCounter.bind(this)} /> :
                       <Connect startDeviceScan={this.bleHelp.bleStartScanning.bind(this.bleHelp)}></Connect>
               }
             </View>

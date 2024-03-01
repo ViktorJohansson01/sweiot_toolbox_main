@@ -319,11 +319,12 @@ export default class BleHelper {
             .then((result: boolean) => {
                 this.dbg.l("BLE disconnect done");
                 this.app.setStatusText("BLE disconnected");
+                this.app.setMeasurementDataGraphVisible(false);
                 this.app.setPairingDeviceView(false);
                 this.app.isStartDeviceScanViewVisible(true);
             })
             .catch((error: Error) => {
-                this.dbg.e("Error when disconnecting: " + error); this.app.forceUpdate();
+                this.dbg.e("Error when disconnecting: " + error);
             });
 
     } // bleDisconnect

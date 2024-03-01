@@ -7,25 +7,31 @@ import { Chart } from '../utilities/Chart';
 import { disconnect } from 'react-native-ble-manager';
 import { NativeBaseProvider } from 'native-base';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import AnimatedLottieView from 'lottie-react-native';
+import Config from './Config';
 
-const InfoItem = ({ variable, value }: any) => (
-    <View style={{ flexDirection: 'row', paddingHorizontal: 15, alignItems: 'center', justifyContent: 'space-between', width: '100%', height: 30, paddingHorizontal: 30 }}>
-        <Text>{variable}</Text>
-        <Text>{value}</Text>
+const InfoItem = ({ variable, value, currentColors }: any) => (
+    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', height: 30, paddingHorizontal: 30 }}>
+        <Text style={{ color: currentColors.textColor }}>{variable}</Text>
+        <Text style={{ color: currentColors.textColor }}>{value}</Text>
     </View>
 )
 let counter = 0;
-const Graph = ({ measurementData, measurementDataLength, disconnect }: any) => {
+const Graph = ({ measurementData, getAndIncreaseMeasuredDataCounter, disconnect }: any) => {
     const [data, setData] = useState([]);
+    const [selectedConfigIndex, setSelectedConfigIndex] = useState(0);
+    const [showConfig, setShowConfig] = useState(false);
 
     useEffect(() => {
-        if (!measurementData.includes("Measured data receptions"))
-            if (counter > 0) {
-                measurementData.push({ variable: "Measured data receptions", value: counter });
+        const updatedData = measurementData.map((item: any) => {
+            if (item["variable"] === "Measured data receptions") {
+                return { ...item, value: getAndIncreaseMeasuredDataCounter() };
             }
-        counter++
-        setData(measurementData);
+            return item;
+        });
+        console.log(data.length < 1);
 
+        setData(updatedData);
     }, [measurementData])
 
     return (
@@ -33,47 +39,88 @@ const Graph = ({ measurementData, measurementDataLength, disconnect }: any) => {
             {({ currentColors }: any) => (
                 <NativeBaseProvider>
                     <ScrollView style={{ flex: 1, backgroundColor: currentColors.secondaryColor }}>
-                        <View style={{ marginTop: 40, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}>
-                            <View style={{ backgroundColor: currentColors.backgroundColor, width: '90%', height: 720, justifyContent: 'center', borderRadius: 20 }}>
 
-                                <LineChart
-                                    style={{ paddingVertical: 30 }}
-                                    data={Chart.getData()}
-                                    width={Dimensions.get('window').width / 1.1}
-                                    height={256}
-                                    verticalLabelRotation={0}
-                                    chartConfig={Chart.getConfig()}
-                                    bezier
-                                />
+                        {showConfig ? <Config configIndex={selectedConfigIndex} isSuperUser={true} showCallback={setShowConfig} /> :
+                            <View style={{ marginTop: 40, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{ fontWeight: 'bold', fontSize: 20, width: '100%', marginBottom: 20, marginLeft: "5%", backgroundColor: currentColors.secondaryColor, color: currentColors.textColor }}>
+                                    Select your device
+                                </Text>
+                                <View style={{ backgroundColor: currentColors.backgroundColor, width: '90%', justifyContent: 'center', borderRadius: 20 }}>
+
+                                    <LineChart
+                                        style={{ paddingVertical: 30, alignSelf: "center" }}
+                                        data={Chart.getData()}
+                                        width={Dimensions.get('window').width / 1.11}
+                                        height={256}
+                                        verticalLabelRotation={0}
+                                        chartConfig={{
+                                            backgroundGradientFrom: "#FFFFFF", // "#1E2923"
+                                            backgroundGradientFromOpacity: 0,
+                                            backgroundGradientTo: "#FFFFFF", // "#08130D"
+                                            backgroundGradientToOpacity: 0, // 0.5
+                                            color: () => currentColors.describingTextColor, // green
+                                            strokeWidth: 2, // optional, default 3
+                                            barPercentage: 0.5,
+                                            useShadowColorFromDataset: false, // optional
+                                          }}
+                                        bezier
+                                    />
 
 
-                                <View style={{ height: 400, paddingVertical: 30, borderTopColor: currentColors.describingTextColor, borderTopWidth: 1 }}>
-                                    {data.map(((item: any, index: any) => <InfoItem key={index} variable={item.variable} value={item.value} />))}
+                                    <View style={{ paddingVertical: 30, borderTopColor: currentColors.describingTextColor, borderTopWidth: 1 }}>
+                                        {data.map(((item: any, index: any) => <InfoItem key={index} variable={item.variable} currentColors={currentColors} value={item.value} />))}
+
+                                    </View>
 
                                 </View>
-
-                            </View>
-                            {/**next */}
-                            <View style={{ marginTop: 40, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}></View>
-                            <Text style={{width: '100%', marginLeft: 40, fontSize: 16}}>Settings</Text>
-                            <View style={{ backgroundColor: currentColors.backgroundColor, width: '90%', marginTop: 20, height: 100, justifyContent: 'center', borderRadius: 20 }}>
-                            <SimpleLineIcons name="arrow-right" size={10} color={currentColors.primaryColor} />
+                                {/**next */}
+                                <View style={{ marginTop: 40, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', borderRadius: 20 }}></View>
+                                <Text style={{ width: '100%', marginLeft: 40, fontSize: 16, color: currentColors.textColor }}>Device Settings</Text>
                                 <TouchableOpacity
-                                    onPress={disconnect}
-                                    accessibilityLabel='Cancel scanning'
-                                    style={[styles.button, { backgroundColor: currentColors.primaryColor, alignSelf: 'center' }]}
+                                    onPress={() => {
+                                        setSelectedConfigIndex(3);
+                                        setShowConfig(true);
+                                    }}
+                                    style={{ backgroundColor: currentColors.backgroundColor, marginTop: 15, width: '90%', paddingVertical: 20, justifyContent: 'space-between', borderRadius: 20, flexDirection: "row", alignItems: "center", paddingHorizontal: 30 }}
                                 >
-                                    <Text style={[styles.buttonText, {color: currentColors.backgroundColor}]}>Disconnect</Text>
+
+                                    <Text style={[styles.buttonText, { color: currentColors.textColor }]}>Config</Text>
+                                    <SimpleLineIcons name="arrow-right" size={15} color={currentColors.textColor} />
+
+
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setSelectedConfigIndex(0);
+                                        setShowConfig(true);
+                                    }}
+                                    style={{ backgroundColor: currentColors.backgroundColor, marginTop: 15, width: '90%', paddingVertical: 20, justifyContent: 'space-between', borderRadius: 20, flexDirection: "row", alignItems: "center", paddingHorizontal: 30 }}
+                                >
+
+                                    <Text style={[styles.buttonText, { color: currentColors.textColor }]}>System</Text>
+                                    <SimpleLineIcons name="arrow-right" size={15} color={currentColors.textColor} />
+
+
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        disconnect();
+
+                                    }}
+                                   
+                                    style={[styles.button, { backgroundColor: currentColors.dangerButton, alignSelf: 'center', marginBottom: 30 }]}
+                                >
+                                    <Text style={[styles.buttonText, { color: currentColors.backgroundColor, fontSize: 18 }]}>Disconnect</Text>
                                 </TouchableOpacity>
 
-                            </View>
-                        </View>
-                 
 
-                </ScrollView>
-              </NativeBaseProvider>
-    )
-}
+                            </View>}
+
+
+                    </ScrollView>
+                </NativeBaseProvider>
+            )
+            }
         </Theme >
     );
 
@@ -90,11 +137,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     button: {
-        marginTop: 15,
-        padding: 17,
-        borderRadius: 50,
+        marginTop: 25,
+        paddingVertical: 15,
+        borderRadius: 15,
         alignItems: 'center',
-        width: '80%'
+        width: "90%"
     },
     buttonText: {
 

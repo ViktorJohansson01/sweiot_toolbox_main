@@ -610,6 +610,9 @@ export default class Protocol {
      *
      * @beta
      */
+
+    
+
     public getMeasurmentData(data: string): Array<object> {
         let measuredData: Array<object> = new Array;
 
