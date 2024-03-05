@@ -810,7 +810,13 @@ export default class SweIoTConf extends Component<any, any, any> {
                     this.state.isMeasurementDataGraphVisible && Ble.getInstance().bleDeviceConnected() ? 
                     <Graph disconnect={() => this.bleHelp.bleDisconnect()} 
                     measurementData={this.getMeasurementDataList()} 
-                    getAndIncreaseMeasuredDataCounter={this.getAndIncreaseMeasuredDataCounter.bind(this)} /> :
+                    getAndIncreaseMeasuredDataCounter={this.getAndIncreaseMeasuredDataCounter.bind(this)}
+                    getParTextState={this.getParTextState.bind(this)} 
+                    setParTextState={this.setParTextState.bind(this)}
+                    setParTextListState={this.setParTextListState.bind(this)}
+                    sendDataSetParsCmd={this.appHelp.sendDataSetParsCmd.bind(this.appHelp)}
+                    sendDataReqCmd={this.appHelp.sendDataReqCmd.bind(this.appHelp)}/>
+                     :
                       <Connect startDeviceScan={this.bleHelp.bleStartScanning.bind(this.bleHelp)}></Connect>
               }
             </View>

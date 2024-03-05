@@ -9,6 +9,7 @@ import { NativeBaseProvider } from 'native-base';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import AnimatedLottieView from 'lottie-react-native';
 import Config from './Config';
+import ConfigUtilities from '../utilities/ConfigUtilities';
 
 const InfoItem = ({ variable, value, currentColors }: any) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', height: 30, paddingHorizontal: 30 }}>
@@ -17,10 +18,15 @@ const InfoItem = ({ variable, value, currentColors }: any) => (
     </View>
 )
 let counter = 0;
-const Graph = ({ measurementData, getAndIncreaseMeasuredDataCounter, disconnect }: any) => {
+const Graph = ({ measurementData, getAndIncreaseMeasuredDataCounter, disconnect, getParTextState, sendDataReqCmd, setParTextState, setParTextListState, sendDataSetParsCmd }: any) => {
     const [data, setData] = useState([]);
     const [selectedConfigIndex, setSelectedConfigIndex] = useState(0);
     const [showConfig, setShowConfig] = useState(false);
+   
+
+    useEffect(() => {
+        ConfigUtilities.setParTextDefaultState(selectedConfigIndex, setParTextListState);
+    }, [selectedConfigIndex])
 
     useEffect(() => {
         const updatedData = measurementData.map((item: any) => {
@@ -32,7 +38,11 @@ const Graph = ({ measurementData, getAndIncreaseMeasuredDataCounter, disconnect 
         console.log(data.length < 1);
 
         setData(updatedData);
-    }, [measurementData])
+        if (getParTextState !== null) {
+            // Perform your action here. This code will run whenever getParTextState updates.
+            console.log(getParTextState(0));
+          }
+    }, [measurementData, getParTextState])
 
     return (
         <Theme>
@@ -40,7 +50,9 @@ const Graph = ({ measurementData, getAndIncreaseMeasuredDataCounter, disconnect 
                 <NativeBaseProvider>
                     <ScrollView style={{ flex: 1, backgroundColor: currentColors.secondaryColor }}>
 
-                        {showConfig ? <Config configIndex={selectedConfigIndex} isSuperUser={true} showCallback={setShowConfig} /> :
+                        
+
+                        {showConfig ? <Config configIndex={selectedConfigIndex} sendDataReqCmd={sendDataReqCmd} isSuperUser={true} sendDataSetParsCmd={sendDataSetParsCmd}  getParTextState={getParTextState} setParTextState={setParTextState} setParTextListState={setParTextListState} showCallback={setShowConfig} /> :
                             <View style={{ marginTop: 40, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{ fontWeight: 'bold', fontSize: 20, width: '100%', marginBottom: 20, marginLeft: "5%", backgroundColor: currentColors.secondaryColor, color: currentColors.textColor }}>
                                     Select your device
@@ -78,7 +90,7 @@ const Graph = ({ measurementData, getAndIncreaseMeasuredDataCounter, disconnect 
                                 <Text style={{ width: '100%', marginLeft: 40, fontSize: 16, color: currentColors.textColor }}>Device Settings</Text>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        setSelectedConfigIndex(3);
+                                        setSelectedConfigIndex(1);
                                         setShowConfig(true);
                                     }}
                                     style={{ backgroundColor: currentColors.backgroundColor, marginTop: 15, width: '90%', paddingVertical: 20, justifyContent: 'space-between', borderRadius: 20, flexDirection: "row", alignItems: "center", paddingHorizontal: 30 }}

@@ -15,7 +15,7 @@ const ModeSelector = ({ sendSystemSettingsReq, app }: any) => {
     app.setMeasurementDataGraphVisible(true);
   }, 1000); 
 
-  const ModeItemRender = React.memo(({ data, currentColors }: { data: any, currentColors: any }) => (
+  const ModeItemRender = React.memo(({ data, currentColors, setSelectedConfigIndex }: { data: any, currentColors: any, setSelectedConfigIndex: any }) => (
     <TouchableOpacity
       style={{
         marginVertical: 2,

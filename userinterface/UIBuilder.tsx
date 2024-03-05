@@ -292,7 +292,7 @@ import { Utilities } from "../utilities/Utilities";
     // * x.0, x.00 in a boolean field does not trigger an alert, but . and trailing 0s are removed.
     // * Both float and integers are allowed in a float field to allow reasonable field edit 
     // possibilties.   
-    private static checkDataToBeSent(configSetIndex : number, parameterIndex : number, data : string, props : any)
+    private static checkDataToBeSent(configSetIndex : number, parameterIndex : number, data : string, setParTextState : any)
     {
         let allowedInput : boolean = false;
         let warningInput : boolean = false;
@@ -371,7 +371,7 @@ import { Utilities } from "../utilities/Utilities";
         // TODO, manage allowed input at a later stage ... for now allways OK ...
         allowedInput = true;
 
-        props.setParTextState(configSetIndex, parameterIndex, data, allowedInput, warningInput);
+        setParTextState(configSetIndex, parameterIndex, data, allowedInput, warningInput);
 
     } // checkDataToBeSent
 
