@@ -10,6 +10,7 @@ import AnimatedLottieView from 'lottie-react-native';
 import _ from 'lodash';
 import Slider from '@react-native-community/slider';
 import { StorageUtil } from '../utilities/StorageUtil';
+import Navbar from './common/Navbar';
 
 const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) => {
     const [visibleItems, setVisibleItems]: any = useState([]);
@@ -19,7 +20,6 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
     const [listVisibleItems, setListVisbleItems] = useState([]);
     const [initialLoad, setInitialLoad] = useState(false);
 
-    console.log("te");
 
     useEffect(() => {
         const sortListBasedOnRSSI = (list: any) => {
@@ -129,7 +129,8 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
     return (
         <Theme>
             {({ currentColors }: any) => (
-                <View style={[styles.container, { backgroundColor: currentColors.secondaryColor, paddingTop: 50 }]}>
+                <View style={[styles.container, { backgroundColor: currentColors.secondaryColor }]}>
+                    <Navbar />
                     <Text style={{ fontWeight: 'bold', fontSize: 20, width: '100%', marginBottom: 20, marginLeft: 30, backgroundColor: currentColors.secondaryColor, color: currentColors.textColor }}>
                         Select your device
                     </Text>
@@ -174,6 +175,7 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
                     {numOfVisibleItems < 1 ?
                         <View style={{
                             flex: 0.80,
+                            minHeight: Dimensions.get('window').height / 3,
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -191,11 +193,10 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
                           width: "95%",
                           flex: 1,
                           minHeight: Dimensions.get('window').height / 3,
-                          maxHeight: Dimensions.get('window').height / 1.95,
                           borderRadius: 20,
                           overflow: 'hidden',
                           justifyContent: 'flex-start',
-                          marginBottom: 20, // Adjust the marginBottom as needed
+                          marginBottom: 35,
                         }}
                       >
                         <FlatList

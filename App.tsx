@@ -112,7 +112,7 @@ export default class SweIoTConf extends Component<any, any, any> {
       isModeSelectorViewVisible: false,
       isloginButtonsDisabled: false,
       internetStatusText: "Internet not connected",
-      loginStatusText: "Please enter login credentials",
+      loginStatusText: null,
       isBleScanningViewVisible: false,
       isPairingDeviceView: false,
       isStartDeviceScanViewVisible: false,

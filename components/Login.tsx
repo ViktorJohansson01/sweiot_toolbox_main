@@ -3,60 +3,74 @@ import { Image, ImageSourcePropType } from 'react-native';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity, TextInput } from 'react-native';
 import { Device } from 'react-native-ble-plx';
+import { Label } from 'recharts';
+import Theme from './Theme';
 
 const Login = ({ loginStatusText, saveCustomerName, saveCustomerPassword, getCustomerName, getCustomerPassword, isLoginButtonsDisabled, loginServer }: any) => {
-    const imageSource: ImageSourcePropType = require('../android/app/src/main/res/SweIot.jpg');
+    const imageSource: ImageSourcePropType = require('../android/app/src/main/res/SweIot.png');
     const TEST_USER_NAME = "superknut";
     const TEST_USER_PASSWORD = "superknutpassword_3951";
     return (
+        <Theme>
+            {({ currentColors }: any) => (
         <View style={{
+            backgroundColor: currentColors.secondaryColor,
             flex: 1,
             flexDirection: 'column',
-            justifyContent: 'space-evenly', 
+            justifyContent: 'space-between', 
             alignItems: 'center',
             width: '100%'
         }}>
 
 
-            <View style={{width: '100%', alignItems: 'center' }}>
-                {/*<Text style={{ fontSize: 18, fontWeight: "bold" }}> {headline + currentChannel + ", " + securityStatus} </Text>*/}
+            <View style={{flex: 1,width: '100%', alignItems: 'center', justifyContent: "center" }}>
 
                 <Image
                     source={imageSource}
-                    style={{ width: '75%' }}
+                    style={{ width: '50%', alignSelf: "center" }}
                     resizeMode="contain"
                 />
                 
             </View>
 
+            <View style={{backgroundColor: currentColors.backgroundColor, width: '100%', borderRadius: 35}}>
+            <View style={{width: '85%', alignSelf: "center"}}>
+            
+            <Text style={{ fontSize: 30, color: 'black', marginTop: "10%" }}> {"Log in"} </Text>
+            {loginStatusText && <Text style={{ fontSize: 12, color: 'black', marginTop: "5%" }}> {loginStatusText} </Text>}
+            
+                <View style={{marginTop: "10%"}}>
+                    <Text style={{color: currentColors.textColor, position: "absolute", top: -10, left: 20, backgroundColor: currentColors.backgroundColor, zIndex: 10, paddingHorizontal: 5}}>Username</Text>
+                    <TextInput style={{ padding: "4%", fontSize: 16, fontWeight: "normal", borderWidth: 1, borderColor: 'black', borderRadius: 10, width: '100%', paddingLeft: 22 }} placeholder={"Username"} onChangeText={(text: string) => saveCustomerName(text)} />
+                </View>
+                <View style={{marginTop: "10%"}}>
+                    <Text style={{color: currentColors.textColor, position: "absolute", top: -10, left: 20, backgroundColor: currentColors.backgroundColor, zIndex: 10, paddingHorizontal: 5}}>Password</Text>
+                    <TextInput style={{ padding: "4%", fontSize: 16, fontWeight: "normal", borderWidth: 1, borderColor: 'black', borderRadius: 10, width: '100%', paddingLeft: 22 }} placeholder={"Password"} onChangeText={(text: string) => saveCustomerPassword(text)} />
+                </View>
 
-            {/*<Text style = {{fontWeight: "normal"}}> { internetStatusText } </Text> - Behövs detta?*/}
-            <View style={{width: '75%'}}>
-            <Text style={{ fontSize: 30, fontWeight: "bold", color: 'black' }}> {"Login"} </Text>
-                <Text style={{ fontWeight: "normal", width: '100%', marginTop: 15 }}> {loginStatusText} </Text>
-
-
-
-                <TextInput style={{ fontSize: 16, fontWeight: "normal", borderBottomWidth: 1, borderColor: 'black', borderRadius: 10, width: '100%', marginTop: 50 }} placeholder={"Username"} onChangeText={(text: string) => saveCustomerName(text)} />
-
-                <TextInput style={{ fontSize: 16, fontWeight: "normal", borderBottomWidth: 1, borderColor: 'black', borderRadius: 10, width: '100%', marginTop: 25 }} placeholder={"Password"} onChangeText={(text: string) => saveCustomerPassword(text)} />
 
                 <View style={{
-
+                    marginVertical: "10%",
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignItems: 'center'
                 }}>
 
-                    <TouchableOpacity disabled={isLoginButtonsDisabled} onPress={() => loginServer.serverLogin(TEST_USER_NAME, TEST_USER_PASSWORD)} style={styles.button}>
-                        <Text style={styles.buttonText}>Login</Text>
+                    <TouchableOpacity
+                        onPress={() => loginServer.serverLogin(TEST_USER_NAME, TEST_USER_PASSWORD)} 
+
+                        style={[styles.button, { backgroundColor: currentColors.primaryColor, alignSelf: 'center' }]}
+                    >
+                        <Text style={styles.buttonText}>Log in</Text>
                     </TouchableOpacity>
                 </View>
+                
+            </View>
             </View>
 
 
-
         </View>
+            )}</Theme>
     );
 };
 
@@ -71,17 +85,16 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     button: {
-        marginTop: 15,
-        padding: 10,
-        backgroundColor: '#007AFF',
-        borderRadius: 5,
+        marginTop: "3%",
+        padding: 17,
+        borderRadius: 50,
         alignItems: 'center',
         width: '100%'
     },
     buttonText: {
         color: 'white',
         fontSize: 16,
-    }
+    },
 });
 
 export default Login;
