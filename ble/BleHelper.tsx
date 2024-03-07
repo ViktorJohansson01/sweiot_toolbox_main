@@ -100,7 +100,11 @@ export default class BleHelper {
                 if (REQUIRE_SECURE_MODE) {
                     if (!this.bleDeviceList.isAlreadyPresent(deviceId)) {
                         this.server.ownsDevice(deviceId, (error: string, response, responseJson: string) => {
+                            
                             if (!error) {
+                                
+                                console.log("responseJson", responseJson);
+                                
                                 if (responseJson) {
                                     this.bleDeviceList.addDevOrUpdateIfPresent(deviceId, deviceName, rssi);
                                 }
@@ -118,7 +122,8 @@ export default class BleHelper {
                                     this.app.setLoginStatusText("Session timed out, please enter login credentials");
                                 }
                                 else {
-                                    this.dbg.e("bleStartScanning, ownsDevice " + deviceId + " ignored due to error when asking if owned, error: " + error);
+                                   
+                                    //this.dbg.e("bleStartScanning, ownsDevice " + deviceId + " ignored due to error when asking if owned, error: " + error);
                                 }
                             }
 

@@ -294,12 +294,13 @@ export default class Server extends Http
 
                 this.httpSend(getOwnsDevUrl, OWNS_DEV_METHOD, JSON.stringify(this.tokenHeaders), null, (error : string, response: any, responseJson : string) =>
                 {
+                    console.log(responseJson, "responseJson");
                     if (!error)
                     {
                         if (responseJson)
                         {
                             let responseObj = JSON.parse(responseJson);
-                            // this.dbg.l("ownsDevice, successful");
+                            //this.dbg.l("ownsDevice, successful");
                             console.log(responseObj);
                             
                             this.dbg.l("ownsDevice, successful, result: " + responseObj.own);
@@ -307,13 +308,13 @@ export default class Server extends Http
                         }
                         else
                         {
-                            this.dbg.e("ownsDevice, failed with unknown non json response");
+                            //this.dbg.e("ownsDevice, failed with unknown non json response");
                             responseListener("Owns device call failed with unknown error", response, "");
                         }
                     }
                     else // error
                     {
-                        this.dbg.l("ownsDevice, failed with error: " + error);
+                        //this.dbg.l("ownsDevice, failed with error: " + error);
                         responseListener("Owns device call failed with: " + error, response, "");
                     }
             

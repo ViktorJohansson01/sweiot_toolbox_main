@@ -18,7 +18,7 @@ const InfoItem = ({ variable, value, currentColors }: any) => (
     </View>
 )
 let counter = 0;
-const Graph = ({ measurementData, getAndIncreaseMeasuredDataCounter, disconnect, getParTextState, sendDataReqCmd, setParTextState, setParTextListState, sendDataSetParsCmd }: any) => {
+const Graph = ({ measurementData, getAndIncreaseMeasuredDataCounter, disconnect, getParTextState, sendDataReqCmd, setParTextState, setParTextListState, sendDataSetParsCmd, getSelectedModeIndex }: any) => {
     const [data, setData] = useState([]);
     const [selectedConfigIndex, setSelectedConfigIndex] = useState(0);
     const [showConfig, setShowConfig] = useState(false);
@@ -90,7 +90,7 @@ const Graph = ({ measurementData, getAndIncreaseMeasuredDataCounter, disconnect,
                                 <Text style={{ width: '100%', marginLeft: 40, fontSize: 16, color: currentColors.textColor }}>Device Settings</Text>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        setSelectedConfigIndex(1);
+                                        setSelectedConfigIndex(getSelectedModeIndex());
                                         setShowConfig(true);
                                     }}
                                     style={{ backgroundColor: currentColors.backgroundColor, marginTop: 15, width: '90%', paddingVertical: 20, justifyContent: 'space-between', borderRadius: 20, flexDirection: "row", alignItems: "center", paddingHorizontal: 30 }}

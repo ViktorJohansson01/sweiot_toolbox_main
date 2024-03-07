@@ -106,7 +106,7 @@ export default class SweIoTConf extends Component<any, any, any> {
       receivedDataText: 'No data received ...',
       versionsText: 'Versions ...',
       parameterTextList: new Array<string>(this.parListLength),
-
+      selectedModeIndex: 0,
       securityStatus: UNSECURE_MODE,
       isLoginViewVisible: REQUIRE_SECURE_MODE,
       isModeSelectorViewVisible: false,
@@ -295,6 +295,9 @@ export default class SweIoTConf extends Component<any, any, any> {
 
   public setMeasurementDataGraphVisible(visible: boolean): void { this.setState({ isMeasurementDataGraphVisible: visible }); }
   public isMeasurementDataGraphVisible(): boolean { return (this.state.isMeasurementDataGraphVisible); }
+
+  public setSelectedModeIndex(index:any): void { this.setState({ selectedModeIndex: index }); }
+  public getSelectedModeIndex(): any { return (this.state.selectedModeIndex); }
 
 
   /*public setAddDevice = _.throttle((newDevice: Device) => {
@@ -805,7 +808,7 @@ export default class SweIoTConf extends Component<any, any, any> {
 
                   this.state.isPairingDeviceView ? <Loading /> :
                   
-                  this.state.isModeSelectorViewVisible ? <ModeSelector sendSystemSettingsReq={this.appHelp.sendSystemSettingsReq.bind(this.appHelp)} app={this}></ModeSelector> :
+                  this.state.isModeSelectorViewVisible ? <ModeSelector sendSystemSettingsReq={this.appHelp.sendSystemSettingsReq.bind(this.appHelp)} app={this} setSelectedModeIndex={this.setSelectedModeIndex.bind(this)}></ModeSelector> :
 
                     this.state.isMeasurementDataGraphVisible && Ble.getInstance().bleDeviceConnected() ? 
                     <Graph disconnect={() => this.bleHelp.bleDisconnect()} 
@@ -815,7 +818,8 @@ export default class SweIoTConf extends Component<any, any, any> {
                     setParTextState={this.setParTextState.bind(this)}
                     setParTextListState={this.setParTextListState.bind(this)}
                     sendDataSetParsCmd={this.appHelp.sendDataSetParsCmd.bind(this.appHelp)}
-                    sendDataReqCmd={this.appHelp.sendDataReqCmd.bind(this.appHelp)}/>
+                    sendDataReqCmd={this.appHelp.sendDataReqCmd.bind(this.appHelp)}
+                    getSelectedModeIndex={this.getSelectedModeIndex.bind(this)}/>
                      :
                       <Connect startDeviceScan={this.bleHelp.bleStartScanning.bind(this.bleHelp)}></Connect>
               }

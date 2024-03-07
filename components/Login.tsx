@@ -27,7 +27,7 @@ const Login = ({ loginStatusText, saveCustomerName, saveCustomerPassword, getCus
 
                 <Image
                     source={imageSource}
-                    style={{ width: '50%', alignSelf: "center" }}
+                    style={{ width: '50%', alignSelf: "center",  }}
                     resizeMode="contain"
                 />
                 
@@ -36,16 +36,16 @@ const Login = ({ loginStatusText, saveCustomerName, saveCustomerPassword, getCus
             <View style={{backgroundColor: currentColors.backgroundColor, width: '100%', borderRadius: 35}}>
             <View style={{width: '85%', alignSelf: "center"}}>
             
-            <Text style={{ fontSize: 30, color: 'black', marginTop: "10%" }}> {"Log in"} </Text>
+            <Text style={{ fontSize: 25, marginTop: "10%", color: currentColors.textColor }}> {"Log in"} </Text>
             {loginStatusText && <Text style={{ fontSize: 12, color: 'black', marginTop: "5%" }}> {loginStatusText} </Text>}
             
                 <View style={{marginTop: "10%"}}>
                     <Text style={{color: currentColors.textColor, position: "absolute", top: -10, left: 20, backgroundColor: currentColors.backgroundColor, zIndex: 10, paddingHorizontal: 5}}>Username</Text>
-                    <TextInput style={{ padding: "4%", fontSize: 16, fontWeight: "normal", borderWidth: 1, borderColor: 'black', borderRadius: 10, width: '100%', paddingLeft: 22 }} placeholder={"Username"} onChangeText={(text: string) => saveCustomerName(text)} />
+                    <TextInput style={{ padding: "4%", fontSize: 16, fontWeight: "normal", borderWidth: 1, borderColor: currentColors.textColor, color: currentColors.textColor, borderRadius: 10, width: '100%', paddingLeft: 22 }} placeholder={"Username"} onChangeText={(text: string) => saveCustomerName(text)} />
                 </View>
                 <View style={{marginTop: "10%"}}>
                     <Text style={{color: currentColors.textColor, position: "absolute", top: -10, left: 20, backgroundColor: currentColors.backgroundColor, zIndex: 10, paddingHorizontal: 5}}>Password</Text>
-                    <TextInput style={{ padding: "4%", fontSize: 16, fontWeight: "normal", borderWidth: 1, borderColor: 'black', borderRadius: 10, width: '100%', paddingLeft: 22 }} placeholder={"Password"} onChangeText={(text: string) => saveCustomerPassword(text)} />
+                    <TextInput style={{ padding: "4%", fontSize: 16, fontWeight: "normal", borderWidth: 1, borderColor: currentColors.textColor, color: currentColors.textColor, borderRadius: 10, width: '100%', paddingLeft: 22 }} placeholder={"Password"} onChangeText={(text: string) => saveCustomerPassword(text)} />
                 </View>
 
 
@@ -61,7 +61,7 @@ const Login = ({ loginStatusText, saveCustomerName, saveCustomerPassword, getCus
 
                         style={[styles.button, { backgroundColor: currentColors.primaryColor, alignSelf: 'center' }]}
                     >
-                        <Text style={styles.buttonText}>Log in</Text>
+                        <Text style={[styles.buttonText]}>Log in</Text>
                     </TouchableOpacity>
                 </View>
                 

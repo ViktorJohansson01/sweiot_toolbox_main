@@ -5,17 +5,16 @@ import _ from 'lodash';
 import uiBuilderData from '../userinterface/uiBuilder.json';
 import Theme from './Theme';
 
-const ModeSelector = ({ sendSystemSettingsReq, app }: any) => {
+const ModeSelector = ({ sendSystemSettingsReq, app, setSelectedModeIndex }: any) => {
   const [selectedApplication, setSelectedApplication] = useState(0);
 
   const debouncedSendSystemSettingsReq = _.debounce((selectedApp: any) => {
     sendSystemSettingsReq(`sys:${selectedApp},,,,,1`);
     console.log(`sys:${selectedApp},,,,,1`);
-    app.setModeSelectorViewVisible(false);
-    app.setMeasurementDataGraphVisible(true);
+    
   }, 1000); 
 
-  const ModeItemRender = React.memo(({ data, currentColors, setSelectedConfigIndex }: { data: any, currentColors: any, setSelectedConfigIndex: any }) => (
+  const ModeItemRender = React.memo(({ data, currentColors }: { data: any, currentColors: any }) => (
     <TouchableOpacity
       style={{
         marginVertical: 2,
@@ -28,7 +27,7 @@ const ModeSelector = ({ sendSystemSettingsReq, app }: any) => {
         paddingLeft: 30,
       }}
       accessibilityLabel={`Device id: ` + data.type}
-      onPress={() => setSelectedApplication(parseInt(data.command))}>
+      onPress={() => handleModeSelect(data.command)}>
 
       <View style={{
         flexDirection: 'column'
@@ -42,9 +41,20 @@ const ModeSelector = ({ sendSystemSettingsReq, app }: any) => {
     </TouchableOpacity>
   ));
 
+  const handleModeSelect = (command:any) => {
+    const getIndex = uiBuilderData.config
+    .findIndex((data) => data.command === command);
+    setSelectedApplication(parseInt(command));
+    console.log("getSelectedModeIndex", getIndex);
+    
+    setSelectedModeIndex(getIndex);
+  }
+
   useEffect(() => {
     if (selectedApplication !== 0) {
       debouncedSendSystemSettingsReq(selectedApplication);
+      app.setModeSelectorViewVisible(false);
+      app.setMeasurementDataGraphVisible(true);
     }
   }, [selectedApplication]);
 
