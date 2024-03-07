@@ -173,11 +173,14 @@ export default class Server extends Http
                     else
                     {
                         this.dbg.e("authorize, failed with unknown non json response" + response);
+                        console.log("authorize, failed with unknown non json response" + response);
+                        
                         responseListener("Server authorization failed with unknown error", response, "");
                     }
                 }
                 else // error
                 {
+
                     this.dbg.e("authorize, failed with error: " + error);
                     responseListener("Server authorization failed. ", response, "");
                 }
