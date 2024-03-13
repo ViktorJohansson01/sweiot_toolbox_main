@@ -9,10 +9,12 @@ import Theme from './Theme';
 import AnimatedLottieView from 'lottie-react-native';
 import _ from 'lodash';
 import Slider from '@react-native-community/slider';
-import { StorageUtil } from '../utilities/StorageUtil';
 import Navbar from './common/Navbar';
+import { AUTHORIZED_MODE, REQUIRE_SECURE_MODE, SECURE_MODE, UNSECURE_MODE } from '../App';
+import Http from '../backend/Http';
+import Server from '../backend/Server';
 
-const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) => {
+const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan, ownsDevice, app }: any) => {
     const [visibleItems, setVisibleItems]: any = useState([]);
     const [searchInput, setSearchInput]: any = useState('');
     const [numOfVisibleItems, setNumOfVisibleItems] = useState(0);
@@ -29,7 +31,11 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
         };
 
         const updateVisibleItems = () => {
+
             let updatedVisibleItems = list;
+            
+            
+            if (list.length > 0 && updatedVisibleItems && updatedVisibleItems.length > 0) {
 
             if (searchInput.length > 2) {
                 updatedVisibleItems = updatedVisibleItems.filter((device: any) => {
@@ -54,9 +60,30 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
 
             if (!_.isEqual(updatedVisibleItems, visibleItems)) {
                 setNumOfVisibleItems(updatedVisibleItems.length);
-                setVisibleItems(updatedVisibleItems);
                 
+                const deviceIds = updatedVisibleItems.map((device: any) => device.name);
+                if (REQUIRE_SECURE_MODE) {
+                ownsDevice(deviceIds, (error: string, response: any, responseJson: any) => {
+                    if (!error) {
+                        let checkedDevices: any = [];
+                       
+                        updatedVisibleItems.map((element:any) => {
+                            if (!checkedDevices.includes(element[0]))
+                            checkedDevices.push(element[0])
+                        });
+                        setVisibleItems((prevValues:any) => [...prevValues], checkedDevices);
+                    }   
+                    if (isNotAuthorized(response, error)) {
+                        console.log("ownsDevice, server API not authorized");
+                        stopScanAndConnect("");
+                        app.setLoginViewVisible(true);
+                        app.setLoginStatusText("Session timed out, please enter login credentials");
+                    }
+                });
             }
+            setVisibleItems(updatedVisibleItems);
+            }
+        }
         };
 
         const id = setInterval(updateVisibleItems, 500);
@@ -73,6 +100,16 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan }: any) =
             setInitialLoad(true);
             
         }
+    }
+
+    function isNotAuthorized(response: any, error: string): boolean {
+        if (response !== null) {
+            return (response.status === Http.ERROR_UNAUTHORIZED);
+        }
+        else {
+            return (error === Server.NOT_AUTHORIZED);
+        }
+
     }
 
     const expandDeviceList = () => {

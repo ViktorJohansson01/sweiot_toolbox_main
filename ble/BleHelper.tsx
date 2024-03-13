@@ -99,20 +99,20 @@ export default class BleHelper {
             if (!error) {
                 if (REQUIRE_SECURE_MODE) {
                     if (!this.bleDeviceList.isAlreadyPresent(deviceId)) {
-                        this.server.ownsDevice(deviceId, (error: string, response, responseJson: string) => {
+                        //this.server.ownsDevice(deviceId, (error: string, response, responseJson: string) => {
                             
-                            if (!error) {
+                           // if (!error) {
                                 
-                                console.log("responseJson", responseJson);
+                         
                                 
-                                if (responseJson) {
-                                    this.bleDeviceList.addDevOrUpdateIfPresent(deviceId, deviceName, rssi);
-                                }
+                            
+                        this.bleDeviceList.addDevOrUpdateIfPresent(deviceId, deviceName, rssi);
+                              /*  }
                                 else // not owned
                                 {
                                     this.dbg.l("bleStartScanning, require secure mode, not present, device " + deviceId + " ignored due to not owned by user");
                                 }
-                            }
+                           /* }
                             else // error
                             {
                                 if (this.isNotAuthorized(response, error)) {
@@ -127,7 +127,7 @@ export default class BleHelper {
                                 }
                             }
 
-                        }); // ownsDevice  
+                        }); */
                     }
                     else // already present
                     {

@@ -45,8 +45,8 @@ const GET_PRIVATE_KEY_METHOD = "GET";
 
 const OWNS_DEV_URL_1 = SERVER_BASE_URL + "/users/";
 const OWNS_DEV_URL_2 = "/devices/";
-const OWNS_DEV_URL_3 = "/own/";
-const OWNS_DEV_METHOD = "GET";
+const OWNS_DEV_URL_3 = "owns/";
+const OWNS_DEV_METHOD = "POST";
 
 const SEC_DEV_URL_1 = SERVER_BASE_URL + "/users/";
 const SEC_DEV_URL_2 = "/devices/";
@@ -276,7 +276,7 @@ export default class Server extends Http
      *
      * @beta
      */
-    public ownsDevice(deviceId : string, responseListener : (error : string, response : any, responseJson: string) => void) : void
+    public ownsDevice(deviceId : Array<string>, responseListener : (error : string, response : any, responseJson: string) => void) : void
     {
         if (this.httpIsConnected())
         {
@@ -285,26 +285,30 @@ export default class Server extends Http
                 let getOwnsDevUrl = OWNS_DEV_URL_1 + 
                                     this.userName +
                                     OWNS_DEV_URL_2 +
-                                    deviceId + 
                                     OWNS_DEV_URL_3;
 
                 this.tokenHeaders.Authorization = BEARER + this.authorizationToken;
 
                 this.dbg.l("ownsDevice, command sent ... url: " + getOwnsDevUrl);
 
-                this.httpSend(getOwnsDevUrl, OWNS_DEV_METHOD, JSON.stringify(this.tokenHeaders), null, (error : string, response: any, responseJson : string) =>
+
+                const body = JSON.stringify( { mac_addresses: deviceId });
+                
+                
+                this.httpSend(getOwnsDevUrl, OWNS_DEV_METHOD, JSON.stringify(this.tokenHeaders), body, (error : string, response: any, responseJson : string) =>
                 {
-                    console.log(responseJson, "responseJson");
+                   
                     if (!error)
                     {
                         if (responseJson)
                         {
                             let responseObj = JSON.parse(responseJson);
                             //this.dbg.l("ownsDevice, successful");
-                            console.log(responseObj);
+                            console.log(typeof responseObj.data, "server response");
                             
-                            this.dbg.l("ownsDevice, successful, result: " + responseObj.own);
-                            responseListener("", response, "true");
+                            
+                            console.log("ownsDevice, successful, result: ", responseObj.data);
+                            responseListener("", response, responseObj);
                         }
                         else
                         {

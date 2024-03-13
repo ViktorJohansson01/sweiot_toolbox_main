@@ -36,6 +36,7 @@ import Connect from './components/Connect';
 import Loading from './components/Loading';
 import _ from 'lodash';
 import Graph from './components/Graph';
+import Server from './backend/Server';
 
 const APP_VERSION = "0.4.0";
 const HL = "SweIoT, " + APP_VERSION;
@@ -45,7 +46,7 @@ const NO_OF_PRESSES_BEFORE_SUPER_USER = 7;
 const NO_OF_MEASUREMENT_DATA = 8; // 7 data fields + counter
 export const BLE_CHANNEL = "BLE";
 export const YGGIO_CHANNEL = "YGGIO";
-export const REQUIRE_SECURE_MODE = true; // Change here if secure or unsecure customers ...
+export const REQUIRE_SECURE_MODE = false; // Change here if secure or unsecure customers ...
 //const TEST_USER_NAME = "fnitest";
 //const TEST_USER_PASSWORD = "enter password";
 const TEST_USER_NAME = "superknut";
@@ -72,6 +73,7 @@ export default class SweIoTConf extends Component<any, any, any> {
   appLocalState: AppLocalState;
   dbg: Dbg;
   uiBuilder: UIBuilder;
+  server: Server;
   parListLength: number;
   currentConfigSetIndex: number = -1; // No value
   devProt: Protocol;
@@ -149,6 +151,8 @@ export default class SweIoTConf extends Component<any, any, any> {
     this.yggioHelp = YggioHelper.getInstance(this, this.http);
 
     this.appHelp = AppHelper.getInstance(this, this.http);
+
+    this.server = Server.getInstance();
 
   } // constructor
 
@@ -804,7 +808,10 @@ export default class SweIoTConf extends Component<any, any, any> {
               /> :
 
                 this.state.isBleScanningViewVisible ?
-                  <DeviceListView list={this.bleHelp.getBleDeviceList()} stopScanAndConnect={this.bleHelp.bleStopScanningAndConnect.bind(this.bleHelp)} refreshScan={this.bleHelp.bleDeviceList.clear} /> :
+                  <DeviceListView list={this.bleHelp.getBleDeviceList()} 
+                  stopScanAndConnect={this.bleHelp.bleStopScanningAndConnect.bind(this.bleHelp)} 
+                  refreshScan={this.bleHelp.bleDeviceList.clear}  
+                  ownsDevice={this.server.ownsDevice.bind(Server.getInstance())} /> :
 
                   this.state.isPairingDeviceView ? <Loading /> :
                   
@@ -819,7 +826,8 @@ export default class SweIoTConf extends Component<any, any, any> {
                     setParTextListState={this.setParTextListState.bind(this)}
                     sendDataSetParsCmd={this.appHelp.sendDataSetParsCmd.bind(this.appHelp)}
                     sendDataReqCmd={this.appHelp.sendDataReqCmd.bind(this.appHelp)}
-                    getSelectedModeIndex={this.getSelectedModeIndex.bind(this)}/>
+                    getSelectedModeIndex={this.getSelectedModeIndex.bind(this)}
+                    app={this}/>
                      :
                       <Connect startDeviceScan={this.bleHelp.bleStartScanning.bind(this.bleHelp)}></Connect>
               }
