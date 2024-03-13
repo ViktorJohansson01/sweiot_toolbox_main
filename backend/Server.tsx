@@ -308,7 +308,7 @@ export default class Server extends Http
                             
                             
                             console.log("ownsDevice, successful, result: ", responseObj.data);
-                            responseListener("", response, responseObj);
+                            responseListener("", response, responseObj.data);
                         }
                         else
                         {

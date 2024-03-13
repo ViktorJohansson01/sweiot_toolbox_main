@@ -21,7 +21,8 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan, ownsDevi
     const [sliderValue, setSliderValue] = useState(100);
     const [listVisibleItems, setListVisbleItems] = useState([]);
     const [initialLoad, setInitialLoad] = useState(false);
-
+    const [checkedDevices, setCheckedDevices]: any = useState([]);
+  
 
     useEffect(() => {
         const sortListBasedOnRSSI = (list: any) => {
@@ -33,46 +34,80 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan, ownsDevi
         const updateVisibleItems = () => {
 
             let updatedVisibleItems = list;
-            
-            
+
+
             if (list.length > 0 && updatedVisibleItems && updatedVisibleItems.length > 0) {
 
-            if (searchInput.length > 2) {
-                updatedVisibleItems = updatedVisibleItems.filter((device: any) => {
-                    const deviceIdWithoutColons = device.id.toUpperCase().replace(/:/g, '');
-                    const searchInputWithoutColons = searchInput.toUpperCase().replace(/:/g, '');
-                  
-                    const searchPattern = new RegExp(`.*${searchInputWithoutColons}.*`);
-                  
-                    return searchPattern.test(deviceIdWithoutColons);
-                  });
-                sortListBasedOnRSSI(updatedVisibleItems);
-                setListVisbleItems(updatedVisibleItems);
-          
-                loadInitValues(updatedVisibleItems);
-            } else if (sliderValue <= 100) {
-                updatedVisibleItems = updatedVisibleItems.filter((device: any) => device?.rssi >= -sliderValue);
-                sortListBasedOnRSSI(updatedVisibleItems);
-                setListVisbleItems(updatedVisibleItems);
-                
-                loadInitValues(updatedVisibleItems);
+                /*if (searchInput.length > 2) {
+                    updatedVisibleItems = updatedVisibleItems.filter((device: any) => {
+                        const deviceIdWithoutColons = device.id.toUpperCase().replace(/:/g, '');
+                        const searchInputWithoutColons = searchInput.toUpperCase().replace(/:/g, '');
+
+                        const searchPattern = new RegExp(`.*${searchInputWithoutColons}.*`);
+
+                        return searchPattern.test(deviceIdWithoutColons);
+                    });
+                    sortListBasedOnRSSI(updatedVisibleItems);
+                    setListVisbleItems(updatedVisibleItems);
+
+                    loadInitValues(updatedVisibleItems);
+                } else if (sliderValue <= 100) {
+                    updatedVisibleItems = updatedVisibleItems.filter((device: any) => device?.rssi >= -sliderValue);
+                    sortListBasedOnRSSI(updatedVisibleItems);
+                    setListVisbleItems(updatedVisibleItems);
+
+                    loadInitValues(updatedVisibleItems);
+                }*/
+
+                if (!_.isEqual(updatedVisibleItems, visibleItems)) {
+
+                    addOwnedDevices(updatedVisibleItems);
+                }
+            }
+        };
+
+        const id = setInterval(updateVisibleItems, 500);
+
+
+        const addOwnedDevices = (list: any) => {
+
+            const deviceIds = list.map((device: any) => device.name);
+
+        
+            const newDeviceIds = deviceIds.filter((deviceId: any) => !checkedDevices.find((device: any) => device.name === deviceId));
+
+            if (newDeviceIds.length === 0) {
+                return;
             }
 
-            if (!_.isEqual(updatedVisibleItems, visibleItems)) {
-                setNumOfVisibleItems(updatedVisibleItems.length);
-                
-                const deviceIds = updatedVisibleItems.map((device: any) => device.name);
-                if (REQUIRE_SECURE_MODE) {
-                ownsDevice(deviceIds, (error: string, response: any, responseJson: any) => {
+            if (REQUIRE_SECURE_MODE) {
+                ownsDevice(newDeviceIds, (error: string, response: any, responseJson: any) => {
                     if (!error) {
-                        let checkedDevices: any = [];
-                       
-                        updatedVisibleItems.map((element:any) => {
-                            if (!checkedDevices.includes(element[0]))
-                            checkedDevices.push(element[0])
+                        const ownedDevices = responseJson.map((deviceInfo: any) => {
+                            return {
+                                name: deviceInfo[0],
+                                settings: deviceInfo[1],
+                                version: deviceInfo[2],
+                                owned: deviceInfo[3]
+                            };
                         });
-                        setVisibleItems((prevValues:any) => [...prevValues], checkedDevices);
-                    }   
+
+                        ownedDevices.forEach((device: any) => {
+                            setCheckedDevices((prev:any) => [...prev, device]);
+                            
+                            if (device.owned === true) {
+                            const deviceOwned = list.find((devices: any) => devices.name === device.name);
+                            console.warn(deviceOwned, "ownedDevice");
+                        
+                            setVisibleItems((prev:any) => [...prev, deviceOwned]);
+                            
+                            }
+                        });
+
+                  
+                        setNumOfVisibleItems(visibleItems.length);
+                        
+                    }
                     if (isNotAuthorized(response, error)) {
                         console.log("ownsDevice, server API not authorized");
                         stopScanAndConnect("");
@@ -80,27 +115,25 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan, ownsDevi
                         app.setLoginStatusText("Session timed out, please enter login credentials");
                     }
                 });
-            }
-            setVisibleItems(updatedVisibleItems);
+            } else {
+                //setVisibleItems(list);
             }
         }
-        };
-
-        const id = setInterval(updateVisibleItems, 500);
-
         return () => {
             clearInterval(id);
         };
-    }, [list, sliderValue, searchInput, visibleItems]);
+    }, [list, sliderValue, searchInput, visibleItems, checkedDevices]);
 
     const loadInitValues = (updatedVisibleItems: any) => {
         if (!initialLoad) {
             updatedVisibleItems = updatedVisibleItems.slice(0, 10);
             setListVisbleItems(updatedVisibleItems);
             setInitialLoad(true);
-            
+
         }
     }
+
+
 
     function isNotAuthorized(response: any, error: string): boolean {
         if (response !== null) {
@@ -130,19 +163,19 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan, ownsDevi
         const memoizedColors = React.useMemo(() => currentColors, [currentColors]);
         return (
             <TouchableOpacity
-            style={[styles.itemContainer, { backgroundColor: memoizedColors.backgroundColor }]}
-            onPress={() => stopScanAndConnect(device.id)}
-        >
-            <View style={styles.itemTextContainer}>
-                <Text style={[styles.itemText, { color: memoizedColors.textColor }]}>{device.id}</Text>
-                <Text style={[styles.itemDescription, { color: memoizedColors.describingTextColor }]}>Type</Text>
-            </View>
-            <View style={styles.itemIconContainer}>
-                <RSSIIcon rssi={device.rssi} currentColors={memoizedColors} />
-                <Text style={[styles.itemText, { color: memoizedColors.textColor }]}>{device.rssi + ' dBm'}</Text>
-            </View>
-            <SimpleLineIcons name="arrow-right" size={10} color={memoizedColors.primaryColor} />
-        </TouchableOpacity>
+                style={[styles.itemContainer, { backgroundColor: memoizedColors.backgroundColor }]}
+                onPress={() => stopScanAndConnect(device.id)}
+            >
+                <View style={styles.itemTextContainer}>
+                    <Text style={[styles.itemText, { color: memoizedColors.textColor }]}>{device.id}</Text>
+                    <Text style={[styles.itemDescription, { color: memoizedColors.describingTextColor }]}>Type</Text>
+                </View>
+                <View style={styles.itemIconContainer}>
+                    <RSSIIcon rssi={device.rssi} currentColors={memoizedColors} />
+                    <Text style={[styles.itemText, { color: memoizedColors.textColor }]}>{device.rssi + ' dBm'}</Text>
+                </View>
+                <SimpleLineIcons name="arrow-right" size={10} color={memoizedColors.primaryColor} />
+            </TouchableOpacity>
         );
     });
 
@@ -226,29 +259,29 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan, ownsDevi
                         </View>
                         :
                         <View
-                        style={{
-                          width: "95%",
-                          flex: 1,
-                          minHeight: Dimensions.get('window').height / 3,
-                          borderRadius: 20,
-                          overflow: 'hidden',
-                          justifyContent: 'flex-start',
-                          marginBottom: 35,
-                        }}
-                      >
-                        <FlatList
-                          showsVerticalScrollIndicator={true}
-                          data={listVisibleItems}
-                          renderItem={({ item }) => <BleItemRender device={item} currentColors={currentColors} />}
-                          keyExtractor={(item: Device) => item.id}
-                          updateCellsBatchingPeriod={50}
-                          windowSize={10}
-                          extraData={{ searchInput, sliderValue }}
-                          onEndReached={expandDeviceList}
-                          onEndReachedThreshold={0.1}
-                          style={{ flex: 1 }} // Add this line
-                        />
-            
+                            style={{
+                                width: "95%",
+                                flex: 1,
+                                minHeight: Dimensions.get('window').height / 3,
+                                borderRadius: 20,
+                                overflow: 'hidden',
+                                justifyContent: 'flex-start',
+                                marginBottom: 35,
+                            }}
+                        >
+                            <FlatList
+                                showsVerticalScrollIndicator={true}
+                                data={visibleItems}
+                                renderItem={({ item }) => <BleItemRender device={item} currentColors={currentColors} />}
+                                keyExtractor={(item: Device) => item.id}
+                                updateCellsBatchingPeriod={50}
+                                windowSize={10}
+                                extraData={{ searchInput, sliderValue }}
+                                onEndReached={expandDeviceList}
+                                onEndReachedThreshold={0.1}
+                                style={{ flex: 1 }} // Add this line
+                            />
+
 
                         </View>}
                     <TouchableOpacity
@@ -257,9 +290,9 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan, ownsDevi
                     >
                         <Text style={styles.buttonText}>Cancel scanning</Text>
                     </TouchableOpacity>
-                    <View style={{paddingTop: 50}}></View>
+                    <View style={{ paddingTop: 50 }}></View>
                 </View>
-                
+
             )}
         </Theme>
     );
