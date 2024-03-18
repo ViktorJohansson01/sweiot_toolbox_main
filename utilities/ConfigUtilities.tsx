@@ -124,5 +124,14 @@ export default class ConfigUtilities {
 
     } // setParTextDefaultState
 
-    
+    public static getDeviceMethodFromString(param: string) : any {
+        const splitString = Utilities.getSplitStringCommaByIndex({inputString: param, index: 0});
+        if (splitString) {
+            const findMethod:any = uiBuilderData.config
+            .find((data) => data.command === splitString);
+            return findMethod ? findMethod?.type : "Unknown"
+        }
+        return "Unknown";
+    }
+
 } // UIBuilder

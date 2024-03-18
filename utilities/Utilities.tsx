@@ -61,6 +61,21 @@ export abstract class Utilities
 
     } // strToHex
 
+
+    public static getSplitStringCommaByIndex({inputString, index} : any) {
+        if (inputString === undefined || inputString === null) {
+            return "Unknown";
+        }
+        const words = inputString.split(',');
+ 
+        if (index >= 0 && index < words.length) {
+            const wordBeforeComma = words[index].trim();
+            return wordBeforeComma;
+        } else {
+            return "Index out of range or invalid";
+        }
+    }
+
     /**
     * Removes 0x00 from string ...
     *

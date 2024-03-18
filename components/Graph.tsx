@@ -17,7 +17,7 @@ const InfoItem = ({ variable, value, currentColors }: any) => (
         <Text style={{ color: currentColors.textColor }}>{value}</Text>
     </View>
 )
-let counter = 0;
+
 const Graph = ({ measurementData, getAndIncreaseMeasuredDataCounter, disconnect, getParTextState, sendDataReqCmd, setParTextState, setParTextListState, sendDataSetParsCmd, getSelectedModeIndex }: any) => {
     const [data, setData] = useState([]);
     const [selectedConfigIndex, setSelectedConfigIndex] = useState(0);
