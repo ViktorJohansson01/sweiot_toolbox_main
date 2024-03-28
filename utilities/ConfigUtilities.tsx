@@ -100,10 +100,11 @@ export default class ConfigUtilities {
     public static sendPars(configSetIndex: any, sendDataSetParsCmd : any) : any
     {
         console.log(configSetIndex, "sendPars h");
+        console.log(sendDataSetParsCmd, "sendPars cmd");
         
         let parListLength = Object.keys(uiBuilderData.config[configSetIndex].parameter).length;
         let prefix = uiBuilderData.config[configSetIndex].command;
-        console.log(UI_BUILDER_TAG + ", sendPars: " + parListLength + ", " + prefix);
+        console.log(UI_BUILDER_TAG + ", sendPars: " + parListLength + ", " + prefix, configSetIndex, "sendPars cmd");
         
         sendDataSetParsCmd(prefix, parListLength);
         

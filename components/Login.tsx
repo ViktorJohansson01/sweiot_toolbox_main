@@ -37,7 +37,7 @@ const Login = ({ loginStatusText, saveCustomerName, saveCustomerPassword, getCus
             <View style={{width: '85%', alignSelf: "center"}}>
             
             <Text style={{ fontSize: 25, marginTop: "10%", color: currentColors.textColor }}> {"Log in"} </Text>
-            {loginStatusText && <Text style={{ fontSize: 12, color: 'black', marginTop: "5%" }}> {loginStatusText} </Text>}
+            {loginStatusText && <Text style={{ fontSize: 12, color: currentColors.textColor, marginTop: "5%" }}> {loginStatusText} </Text>}
             
                 <View style={{marginTop: "10%"}}>
                     <Text style={{color: currentColors.textColor, position: "absolute", top: -10, left: 20, backgroundColor: currentColors.backgroundColor, zIndex: 10, paddingHorizontal: 5}}>Username</Text>

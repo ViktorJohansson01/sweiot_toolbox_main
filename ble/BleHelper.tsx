@@ -40,7 +40,7 @@ export default class BleHelper {
 
         this.ble = Ble.getInstance();
 
-        this.bleDeviceList = new DeviceList();
+        this.bleDeviceList = new DeviceList(app, this);
 
         this.server = Server.getInstance();
 
@@ -56,7 +56,7 @@ export default class BleHelper {
 
     } // getInstance
 
-    public getBleDeviceList(): Device[] {
+    public async getBleDeviceList(): Promise<Device[]> {
         return (this.bleDeviceList.get());
 
     } // getBleDeviceList
@@ -277,9 +277,10 @@ export default class BleHelper {
             this.server.signMsg(this.ble.bleDeviceIdentity(), msg, (error: string, response: any, responseJson: string) => {
                 if (!error) {
                     this.app.setReceivedDataText(responseJson);
-
+                    console.log("responseJson", responseJson, "msg", msg, "response", response, "error");
+                    
                     this.ble.bleSendMessage(responseJson, (error: string, result: string) => {
-                        if (!error) { /* this.dbg.l(result); */ }
+                        if (!error) {  this.dbg.l(result);  }
                         else { this.dbg.l(error); }
 
                     }); // bleSendMessage

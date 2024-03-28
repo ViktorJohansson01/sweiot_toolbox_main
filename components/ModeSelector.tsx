@@ -4,6 +4,7 @@ import { Device } from 'react-native-ble-plx';
 import _ from 'lodash';
 import uiBuilderData from '../userinterface/uiBuilder.json';
 import Theme from './Theme';
+import Ble from '../ble/Ble';
 
 const ModeSelector = ({ sendSystemSettingsReq, app, setSelectedModeIndex }: any) => {
   const [selectedApplication, setSelectedApplication] = useState(0);
@@ -78,6 +79,9 @@ const ModeSelector = ({ sendSystemSettingsReq, app, setSelectedModeIndex }: any)
               alignItems: 'center',
               width: '100%'
             }}>
+              <Text style={{ fontWeight: 'bold', fontSize: 20, width: '100%', marginBottom: 20, marginLeft: "10%", backgroundColor: currentColors.secondaryColor, color: currentColors.textColor }}>
+                  {Ble.getInstance().bleDeviceIdentity()}
+              </Text>
               <Text accessibilityLabel='Select what measuring mode you want to use' style={{ fontWeight: 'bold', fontSize: 20, width: '100%', marginBottom: 20, marginLeft: 30, backgroundColor: currentColors.secondaryColor, color: currentColors.textColor }}>
                 Select Measurement Mode
               </Text>

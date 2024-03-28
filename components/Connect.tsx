@@ -32,7 +32,7 @@ const Connect = ({ startDeviceScan }: any) => {
                             alignItems: 'center'
                         }}>
                             <View style={{ backgroundColor: currentColors.secondaryColor, padding: 20, borderRadius: 100, marginBottom: "10%" }}>
-                                <Icon name="wifi" size={100} color={currentColors.primaryColor} />
+                                <Icon name="bluetooth" size={100} color={currentColors.primaryColor} />
 
                             </View>
 

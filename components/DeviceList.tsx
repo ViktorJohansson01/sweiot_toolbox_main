@@ -24,108 +24,46 @@ const DeviceList = React.memo(({ list, stopScanAndConnect, refreshScan, ownsDevi
     const [initialLoad, setInitialLoad] = useState(false);
     const [checkedDevices, setCheckedDevices]: any = useState([]);
 
-
     useEffect(() => {
+        
         const sortListBasedOnRSSI = (list: any) => {
             if (list.length > 1) {
                 list.sort((a: any, b: any) => (b.rssi && a.rssi) && b.rssi! - a.rssi!);
             }
         };
 
-        const updateVisibleItems = () => {
-
-            console.log(numOfVisibleItems, "numOfVisibleItems");
-            setListVisbleItems(visibleItems);
-            addOwnedDevices(list);
-            setNumOfVisibleItems(visibleItems.length);
-            if (visibleItems.length > 0) {
-                let updatedVisibleItems = visibleItems;
+        const updateVisibleItems = async () => {
+            const deviceList = await list();
+            
+            if (deviceList.length > 0) {
+                let updatedVisibleItems = deviceList;
                 if (searchInput.length > 2) {
-                    updatedVisibleItems = visibleItems.filter((device: any) => {
+                    updatedVisibleItems = updatedVisibleItems.filter((device: any) => {
                         const deviceIdWithoutColons = device.id.toUpperCase().replace(/:/g, '');
                         const searchInputWithoutColons = searchInput.toUpperCase().replace(/:/g, '');
                         const searchPattern = new RegExp(`.*${searchInputWithoutColons}.*`);
                         return searchPattern.test(deviceIdWithoutColons);
                     });
                 } else if (sliderValue <= 100) {
-                    updatedVisibleItems = visibleItems.filter((device: any) => device?.rssi >= -sliderValue);
+                    updatedVisibleItems = updatedVisibleItems.filter((device: any) => device?.rssi >= -sliderValue);
                 }
 
                 setListVisbleItems(updatedVisibleItems);
                 sortListBasedOnRSSI(updatedVisibleItems);
+                setNumOfVisibleItems(updatedVisibleItems.length);
             } 
-            
+            sortListBasedOnRSSI(deviceList);
             
 
         };
 
         const id = setInterval(updateVisibleItems, 500);
 
-        const addOwnedDevices = (list: any) => {
-
-            const deviceIds = list.map((device: any) => device.name);
-
-
-            const newDeviceIds = deviceIds.filter((deviceId: any) => !checkedDevices.find((device: any) => device.name === deviceId));
-            setNumOfVisibleItems(visibleItems.length);
-
-
-
-            if (newDeviceIds.length === 0) {
-                return;
-            }
-
-            if (REQUIRE_SECURE_MODE) {
-                ownsDevice(newDeviceIds, (error: string, response: any, responseJson: any) => {
-                    if (!error) {
-                        const ownedDevices = responseJson.map((deviceInfo: any) => {
-                            return {
-                                name: deviceInfo[0],
-                                settings: deviceInfo[1],
-                                version: deviceInfo[2],
-                                owned: deviceInfo[3]
-                            };
-                        });
-
-                        ownedDevices.forEach((device: any) => {
-                            setCheckedDevices((prev: any) => [...prev, device]);
-
-                            if (device.owned === true) {
-                                const deviceOwned = list.find((devices: any) => devices.name === device.name);
-
-                                setVisibleItems((prev: any) => [...prev, deviceOwned]);
-                                setNumOfVisibleItems(visibleItems.length);
-
-                            }
-                        });
-                    }
-                    if (isNotAuthorized(response, error)) {
-                        console.log("ownsDevice, server API not authorized");
-                        stopScanAndConnect("");
-                        app.setLoginViewVisible(true);
-                        app.setLoginStatusText("Session timed out, please enter login credentials");
-                    }
-                });
-            } else {
-                //setVisibleItems(list);
-            }
-        }
+        
         return () => {
             clearInterval(id);
         };
-    }, [sliderValue, searchInput, visibleItems, checkedDevices]);
-
-
-
-    function isNotAuthorized(response: any, error: string): boolean {
-        if (response !== null) {
-            return (response.status === Http.ERROR_UNAUTHORIZED);
-        }
-        else {
-            return (error === Server.NOT_AUTHORIZED);
-        }
-
-    }
+    }, [list(), sliderValue, searchInput, visibleItems]);
 
     const restartDeviceScan = () => {
         list = [];

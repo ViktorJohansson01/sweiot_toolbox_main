@@ -18,7 +18,7 @@ import { View, Text, Button, FlatList, Modal, Dimensions, StyleSheet, TextInput,
 import Ble from './ble/Ble';
 import Dbg, { DebugItem } from './utilities/Dbg';
 import UIBuilder from './userinterface/UIBuilder';
-import DeviceList, { Device } from './utilities/DeviceList';
+import { Device } from './utilities/DeviceList';
 import Protocol from './ble/Protocol';
 import Http from './backend/Http';
 import Yggio from './backend/Yggio';
@@ -34,7 +34,6 @@ import ModeSelector from './components/ModeSelector';
 import Theme from './components/Theme';
 import Connect from './components/Connect';
 import Loading from './components/Loading';
-import _ from 'lodash';
 import Graph from './components/Graph';
 import Server from './backend/Server';
 
@@ -808,7 +807,7 @@ export default class SweIoTConf extends Component<any, any, any> {
               /> :
 
                 this.state.isBleScanningViewVisible ?
-                  <DeviceListView list={this.bleHelp.getBleDeviceList()} 
+                  <DeviceListView list={() => this.bleHelp.getBleDeviceList()} 
                   stopScanAndConnect={this.bleHelp.bleStopScanningAndConnect.bind(this.bleHelp)} 
                   refreshScan={this.bleHelp.bleDeviceList.clear}  
                   ownsDevice={this.server.ownsDevice.bind(Server.getInstance())} /> :
@@ -827,6 +826,7 @@ export default class SweIoTConf extends Component<any, any, any> {
                     sendDataSetParsCmd={this.appHelp.sendDataSetParsCmd.bind(this.appHelp)}
                     sendDataReqCmd={this.appHelp.sendDataReqCmd.bind(this.appHelp)}
                     getSelectedModeIndex={this.getSelectedModeIndex.bind(this)}
+                    setSelectedModeIndex={this.setSelectedModeIndex.bind(this)}
                     app={this}/>
                      :
                       <Connect startDeviceScan={this.bleHelp.bleStartScanning.bind(this.bleHelp)}></Connect>

@@ -58,6 +58,10 @@ const SIGN_MSG_URL_2 = "/devices/";
 const SIGN_MSG_URL_3 = "/sign/";
 const SIGN_MSG_METHOD = "POST";
 
+const SETTINGS_MSG_URL_1 = SERVER_BASE_URL + "/users/";
+const SETTINGS_MSG_URL_2 = "/devices/";
+const SETTINGS_MSG_URL_3 = "/setting_value/";
+const SETTINGS_MSG_METHOD = "POST";
 
 const BEARER = "Bearer ";
 
@@ -276,8 +280,9 @@ export default class Server extends Http
      *
      * @beta
      */
-    public ownsDevice(deviceId : Array<string>, responseListener : (error : string, response : any, responseJson: string) => void) : void
+    public ownsDevice(deviceId : Array<string>, responseListener : (error : string, response : any, responseJson: string) => void) : Promise<void>
     {
+        return new Promise((resolve, reject) => {
         if (this.httpIsConnected())
         {
             if (this.authorizationToken)
@@ -309,6 +314,81 @@ export default class Server extends Http
                             
                             console.log("ownsDevice, successful, result: ", responseObj.data);
                             responseListener("", response, responseObj.data);
+                            resolve();
+                        }
+                        else
+                        {
+                            //this.dbg.e("ownsDevice, failed with unknown non json response");
+                            responseListener("Owns device call failed with unknown error", response, "");
+                            reject();
+                        }
+                    }
+                    else // error
+                    {
+                        //this.dbg.l("ownsDevice, failed with error: " + error);
+                        responseListener("Owns device call failed with: " + error, response, "");
+                        reject();
+                    }
+            
+                }); // httpSend
+            }
+            else // no token
+            {
+                this.dbg.w("ownsDevice, not authorized");
+                responseListener(Server.NOT_AUTHORIZED, null, "");
+                reject();
+            }
+        }
+        else // no Internet
+        {
+            this.dbg.w("ownsDevice, no internet connection");
+            responseListener("No internet connection", null, "");
+            reject();
+        }
+    });
+    } // ownsDevice    
+
+
+    public sendSystemSettings(deviceId : string, systemSettingString: string, responseListener : (error : string, response : any, responseJson: string) => void) : void
+    {
+        if (this.httpIsConnected())
+        {
+            if (this.authorizationToken)
+            {
+                let getSettingsUrl = SETTINGS_MSG_URL_1 + 
+                                    this.userName +
+                                    SETTINGS_MSG_URL_2 +
+                                    deviceId +
+                                    SETTINGS_MSG_URL_3;
+
+                this.tokenHeaders.Authorization = BEARER + this.authorizationToken;
+
+                this.dbg.l("sendSystemSettings, command sent ... url: " + getSettingsUrl);
+
+
+                const body = JSON.stringify( {
+                    setting_value: {
+                      settings: {
+                        systemSettingString
+                      }
+                    }
+                  });
+                
+                
+                this.httpSend(getSettingsUrl, SETTINGS_MSG_METHOD, JSON.stringify(this.tokenHeaders), body, (error : string, response: any, responseJson : string) =>
+                {
+                   
+                    if (!error)
+                    {
+                        if (responseJson)
+                        {
+                            let responseObj = JSON.parse(responseJson);
+                            //this.dbg.l("ownsDevice, successful");
+                            console.log(typeof responseObj.data, "server response");
+                            
+                            
+                            console.log("ownsDevice, successful, result: ", responseObj);
+                            responseListener("", response, responseObj);
                         }
                         else
                         {
@@ -336,7 +416,7 @@ export default class Server extends Http
             responseListener("No internet connection", null, "");
         }
 
-    } // ownsDevice    
+    }
 
     /**
      * Get answer (true or false) from the Server if a given device id 
